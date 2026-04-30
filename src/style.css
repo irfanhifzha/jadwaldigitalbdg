@@ -1,0 +1,339 @@
+
+
+.center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.add-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    border-color: var(--border-hover);
+}
+
+/* =========================================================
+   COLOR UTILITIES (BACKGROUND)
+   ========================================================= */
+
+.blue-color { background: var(--blue-bg); color: var(--blue-color); }
+.purple-color { background: var(--purple-bg); color: var(--purple-color); }
+.green-color { background: var(--green-bg); color: var(--green-color); }
+.red-color { background: var(--red-bg); color: var(--red-color); }
+.orange-color { background: var(--orange-bg); color: var(--orange-color); }
+.white-color { background: white; }
+
+
+/* =========================================================
+   COLOR UTILITIES (TEXT)
+   ========================================================= */
+
+.purple-text { color: var(--purple-color); }
+.blue-text { color: var(--blue-color); }
+.green-text { color: var(--green-color); }
+.red-text { color: var(--red-color); }
+.orange-text { color: var(--orange-color); }
+.white-text { background: var(--white); }
+.black-text { background: var(--black); }
+
+
+/* =========================================================
+   CARD MENU COMPONENT
+   ========================================================= */
+
+/* Container */
+.card-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 240px;
+    height: fit-content;
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--black);
+}
+
+/* Hover */
+.card-menu:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    border-color: var(--border-hover);
+}
+
+/* Icon */
+.card-menu span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+/* Title */
+.card-menu h1 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--black);
+    margin: 0;
+}
+
+
+/* =========================================================
+   HOVER COLOR VARIANTS
+   ========================================================= */
+
+.bg-hover-p:hover { background-color: var(--purple-bg); color: var(--purple-color); }
+.bg-hover-p:hover h1 { color: var(--purple-color); }
+
+.bg-hover-b:hover { background: var(--blue-bg); color: var(--blue-color); }
+.bg-hover-b:hover h1 { color: var(--blue-color); }
+
+.bg-hover-g:hover { background: var(--green-bg); color: var(--green-color); }
+.bg-hover-g:hover h1 { color: var(--green-color); }
+
+.bg-hover-r:hover { background: var(--red-bg); color: var(--red-color); }
+.bg-hover-r:hover h1 { color: var(--red-color); }
+
+.bg-hover-o:hover { background: var(--orange-bg); color: var(--orange-color); }
+.bg-hover-o:hover h1 { color: var(--orange-color); }
+
+
+/* =========================================================
+   ACTIVE COLOR STATES
+   ========================================================= */
+
+.bg-active-p { background-color: var(--purple-bg); color: var(--purple-color); }
+.bg-active-p h1 { color: var(--purple-color); }
+
+.bg-active-b { background: var(--blue-bg); color: var(--blue-color); }
+.bg-active-b h1 { color: var(--blue-color); }
+
+.bg-active-g { background: var(--green-bg); color: var(--green-color); }
+.bg-active-g h1 { color: var(--green-color); }
+
+.bg-active-r { background: var(--red-bg); color: var(--red-color); }
+.bg-active-r h1 { color: var(--red-color); }
+
+.bg-active-o { background: var(--orange-bg); color: var(--orange-color); }
+.bg-active-o h1 { color: var(--orange-color); }
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    gap: 20px;
+    padding: 40px 30px;
+}
+
+/* Sidebar Menu (inherits card-menu styles) */
+.sidebar-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 240px;
+    height: fit-content;
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+
+.bg-invert {
+    background: var(--white);
+    padding: 20px 20px;
+    border-radius: 20px;
+    color: var(--black)
+}
+
+.bg-border {
+  border: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   CARD CONTENT COMPONENT
+   ========================================================= */
+
+.card-content {
+    max-width: 440px;
+    height: fit-content;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.card-content-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 0px 20px 0px;
+}
+
+/* Icon */
+.card-content-header span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+/* Title */
+.card-content-header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Body */
+.card-content-body h2 {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.card-content-body p {
+    font-weight: 400;
+    font-size: 0.8rem;
+    line-height: normal;
+}
+
+.card-content-body.scrollable {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   BADGE COMPONENT
+   ========================================================= */
+
+.badge-main {
+    display: inline-block;
+    padding: 8px 20px;
+    border: 1px solid rgba(184, 184, 184, 0.2);
+    background-color: rgba(255, 255, 255, 0.204);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.badge-main-dark {
+    display: inline-block;
+    padding: 8px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.464);
+    background-color: rgba(10, 10, 10, 0.624);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   SEARCH BAR COMPONENT
+   ========================================================= */
+
+.search-bar {
+    width: 340px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #f5f5f5;
+    transition: 0.2s ease;
+}
+
+.search-bar:hover { background: #eeeeee; }
+.search-bar:focus-within { background: #eaeaea; }
+
+.search-bar .icon {
+    font-size: 20px;
+    color: #666;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    font-size: 14px;
+    color: #222;
+}
+
+.search-bar input::placeholder {
+    color: #999;
+}
+
+
+/* =========================================================
+   TAG COMPONENT
+   ========================================================= */
+
+.tag-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: system-ui, sans-serif;
+}
+
+.tag {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    background: #f3f3f3;
+    color: #555;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: 0.15s ease;
+    user-select: none;
+}
+
+.tag:hover { background: #e9e9e9; }
+
+/* Active */
+.tag[data-state="on"] {
+    background: #111;
+    color: #fff;
+}
+
+/* Disabled */
+.tag[data-state="disabled"] {
+    background: #f5f5f5;
+    color: #bdbdbd;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Click animation */
+.tag:active {
+    transform: scale(0.96);
+}
