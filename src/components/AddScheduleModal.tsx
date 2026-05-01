@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 const days = [
@@ -18,12 +18,41 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
   const [room, setRoom] = useState("");
   const [lecturers, setLecturers] = useState("");
   const [type, setType] = useState("teori");
-  const [program, setProgram] = useState("TRPL");
-  const [semester, setSemester] = useState<number>(4);
+  const [program] = useState("TRPL");
+  const [semester] = useState<number>(4);
   const [dayIndex, setDayIndex] = useState<number>(1);
   const [slots, setSlots] = useState<number[]>([]);
+  const [occupiedSlots, setOccupiedSlots] = useState<Set<string>>(new Set());
+
+  // 🔥 Load conflicts from Firestore
+  const loadConflicts = async () => {
+    const snap = await getDocs(collection(db, "schedules"));
+    const occupied = new Set<string>();
+
+    snap.forEach((doc) => {
+      const d = doc.data();
+      const day = d.dayIndex;
+      const s = d.slots || [];
+
+      s.forEach((slot: number) => {
+        occupied.add(`${day}-${slot}`);
+      });
+    });
+
+    setOccupiedSlots(occupied);
+  };
+
+  useEffect(() => {
+    if (open) {
+      loadConflicts();
+    }
+  }, [open]);
 
   const toggleSlot = (slot: number) => {
+    const key = `${dayIndex}-${slot}`;
+
+    if (occupiedSlots.has(key)) return;
+
     setSlots((prev) =>
       prev.includes(slot)
         ? prev.filter((s) => s !== slot)
@@ -75,25 +104,11 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         onChange={(e) => setLecturers(e.target.value)}
       />
 
-      {/* Program */}
-      <input
-        placeholder="Program"
-        value={program}
-        onChange={(e) => setProgram(e.target.value)}
-      />
-
-      {/* Semester */}
-      <input
-        type="number"
-        placeholder="Semester"
-        value={semester}
-        onChange={(e) => setSemester(Number(e.target.value))}
-      />
-
       {/* Type */}
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>
         <option value="praktek">Praktek</option>
+        <option value="tambahan">Matkul Tambahan</option>
       </select>
 
       {/* Day */}
@@ -108,35 +123,28 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         ))}
       </select>
 
-      {/* Slots Toggle UI */}
+      {/* Slots */}
       <div style={{ marginTop: 10 }}>
         <label>Slots</label>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "6px",
-            marginTop: 6,
-          }}
-        >
-          {slotOptions.map((slot) => (
-            <div
-              key={slot}
-              onClick={() => toggleSlot(slot)}
-              style={{
-                padding: "6px 10px",
-                borderRadius: "6px",
-                border: "1px solid #999",
-                cursor: "pointer",
-                userSelect: "none",
-                background: slots.includes(slot) ? "#4f46e5" : "#fff",
-                color: slots.includes(slot) ? "#fff" : "#000",
-              }}
-            >
-              {slot}
-            </div>
-          ))}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+          {slotOptions.map((slot) => {
+            const key = `${dayIndex}-${slot}`;
+            const isBlocked = occupiedSlots.has(key);
+            const isSelected = slots.includes(slot);
+
+            return (
+              <div
+                key={slot}
+                onClick={() => toggleSlot(slot)}
+                className={`button-jam 
+                    ${isBlocked ? "blocked" : "enabled"} 
+                    ${isSelected && !isBlocked ? "selected" : ""}`}
+              >
+                {slot}
+              </div>
+            );
+          })}
         </div>
       </div>
 

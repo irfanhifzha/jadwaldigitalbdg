@@ -35,6 +35,8 @@ export default function Dashboard() {
     const [trplSchedule, setTrplSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
+    const [editMode, setEditMode] = useState(false);
+
     // ✅ modal states
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
@@ -84,12 +86,17 @@ export default function Dashboard() {
 
             {/* ➕ ADD BUTTON */}
             {user && (
-                <button
-                    onClick={() => setOpenAdd(true)}
-                    style={{ marginBottom: 10 }}
-                >
-                    + Tambah Jadwal
-                </button>
+                <div style={{ display: "flex", gap: "10px", marginBottom: 10 }}>
+                    
+                    <button onClick={() => setOpenAdd(true)}>
+                        + Tambah Jadwal
+                    </button>
+
+                    <button onClick={() => setEditMode(prev => !prev)}>
+                        {editMode ? "🔒 Exit Edit Mode" : "✏️ Update Data"}
+                    </button>
+
+                </div>
             )}
 
             <div className="jadwal-wrapper">
@@ -116,9 +123,9 @@ export default function Dashboard() {
                                     return (
                                         <td key={day}>
                                             {s && (
-                                                <div className={`jadwal-container ${s.type}`}>
+                                                <div className={`jadwal-container add-hover ${s.type}`}>
                                                     
-                                                    {user && (
+                                                    {user && editMode && (
                                                         <div className="crud-button">
                                                             <button 
                                                             onClick={() => {
