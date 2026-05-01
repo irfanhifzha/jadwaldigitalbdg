@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import Asdf from "./pages/Asdf";
 
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/Dashboard" element={<Dashboard />} />
+
+        <Route path="/asdf" element={<Asdf />} />
 
 
         {/* 404 route */}

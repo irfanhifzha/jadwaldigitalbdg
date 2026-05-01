@@ -12,7 +12,6 @@ export default function Navbar() {
         justifyContent: "center",
         width: "100%",
         marginTop: "20px",
-        position:"absolute"
       }}
     >
       <button className="card-menu bg-hover-p" style={{margin: '5px 0 15px 0'}} onClick={() => navigate("/")}>

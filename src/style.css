@@ -1,4 +1,7 @@
 
+/* =========================================================
+   new modifier
+   ========================================================= */
 
 .center {
   align-items: center;
@@ -170,10 +173,34 @@
   border: 1px solid var(--border);
 }
 
+.main-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 0px 10px;
+}
+
 
 /* =========================================================
    CARD CONTENT COMPONENT
    ========================================================= */
+
+
+.card-container {
+    width: 100vw;
+    height: fit-content;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
 
 .card-content {
     max-width: 440px;
@@ -181,7 +208,6 @@
     padding: 14px 16px;
     border-radius: 14px;
     border: 1px solid var(--border);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     transition: all 0.2s ease;
 }
 
@@ -189,8 +215,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 5px 0px 20px 0px;
+    padding: 5px 0px 0px 0px;
 }
+
 
 /* Icon */
 .card-content-header span {
@@ -336,4 +363,218 @@
 /* Click animation */
 .tag:active {
     transform: scale(0.96);
+}
+
+
+
+/* =========================================================
+   WRAPPER (handles horizontal scroll)
+   ========================================================= */
+
+.jadwal-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
+border: 1px solid var(--border);
+}
+
+/* =========================================================
+   TABLE DEFAULT (desktop)
+   ========================================================= */
+
+.jadwal-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  font-size: 14px;
+
+
+
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Cells */
+.jadwal-table th,
+.jadwal-table td {
+  height: 36px;
+  padding: 6px;
+  text-align: center;
+  vertical-align: middle;
+  border: 0.5px solid var(--border);
+  
+}
+
+.jadwal-table .jam {
+  width: 47px;
+  font-size: 12px;
+  font-weight: 500;
+
+  background-color: var(--bg-soft, #ffffff);
+
+  position: sticky;
+  left: 0;
+  z-index: 5;
+
+  border-right: 1px solid var(--border);
+  border-left: none;
+
+  /* keep ONLY one shadow */
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Header */
+.jadwal-table thead th {
+  height: 18px;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+.jadwal-table thead .jam {
+  z-index: 5;
+  /* background-color: var(--bg-soft, #f8f8f8); */
+}
+
+/* =========================================================
+   RESPONSIVE: TABLE SCROLL UNDER 800px
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .jadwal-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jadwal-table {
+    min-width: 850px; /* forces scroll instead of squishing */
+  }
+}
+
+/* =========================================================
+   MODIFIERS (UNCHANGED)
+   ========================================================= */
+
+.jam {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.praktek {
+  border: 1px solid var(--blue-border);
+  background-color: var(--blue-bg);
+  color: var(--blue-color);
+}
+
+.teori {
+  border: 1px solid var(--green-border);
+  background-color: var(--green-bg);
+  color: var(--green-color);
+}
+
+
+
+/* =========================================================
+   CONTENT INSIDE CELL
+   ========================================================= */
+
+.jadwal-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.jadwal-container h1 {
+  margin: 5px 40px 0px 8px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-align: start;
+  line-height: normal;
+}
+
+.jadwal-container h2 {
+  margin: 0 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+}
+
+.jadwal-container h3 {
+  margin: 0px 8px 5px 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+  line-height: normal;
+}
+
+
+
+/* =========================================================
+   MODAL TEST
+   ========================================================= */
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+}
+
+/* =========================================================
+   UI for edit and other
+   ========================================================= */
+
+.crud-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* or flex-end if you want inner alignment */
+    align-items: end;
+
+    margin: 0 5px;
+}
+
+.crud-button button.crud-button-icon {
+    margin: 5px 5px 3px 5px;
+    padding: 2px;
+    border-radius: 5px;
+    background-color: white;
+    color: var(--blue-color);
+    font-size: 15px;
+    user-select: none;
+    cursor: pointer;
+
+    border: none;
+
+    transition: background-color 0.2s ease, 
+                color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+}
+
+.crud-button button.crud-button-icon:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }

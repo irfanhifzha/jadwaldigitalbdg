@@ -1,87 +1,200 @@
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-import Navbar from "../components/Navbar"
+import Navbar from "../components/Navbar";
+import AuthButton from "../components/AuthButton";
 
-type Todo = {
-    id: string;
-    title: string;
-    content: string;
-    status: string;
-    note: string;
+import { useEffect, useState } from "react";
+import {
+    collection,
+    getDocs
+} from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import type { User } from "firebase/auth";
+
+// ✅ MODALS
+import AddScheduleModal from "../components/AddScheduleModal";
+import EditScheduleModal from "../components/EditScheduleModal";
+import DeleteScheduleModal from "../components/DeleteScheduleModal";
+
+type Schedule = {
+    id?: string;
+
+    program: "TRPL" | "BISDIG";
+    semester: number;
+
+    dayIndex: number;
+    slots: number[];
+
+    course: string;
+    room: string;
+    lecturers: string[];
+
+    type: "teori" | "praktek";
 };
 
 export default function Dashboard() {
-    const [todos, setTodos] = useState<Todo[]>([]);
+    const [trplSchedule, setTrplSchedule] = useState<Schedule[]>([]);
+    const [user, setUser] = useState<User | null>(null);
+
+    // ✅ modal states
+    const [openAdd, setOpenAdd] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+
+    const [selected, setSelected] = useState<Schedule | null>(null);
+
+    const days = [1, 2, 3, 4, 5];
+    const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+
+    // 🔐 Auth listener
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, (u) => {
+            setUser(u);
+        });
+
+        return () => unsub();
+    }, []);
+
+    // 🔄 Fetch schedules
+    const fetchSchedules = async () => {
+        const snap = await getDocs(collection(db, "schedules"));
+
+        const data = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        })) as Schedule[];
+
+        setTrplSchedule(data.filter(d => d.program === "TRPL"));
+    };
 
     useEffect(() => {
-        const fetchTodos = async () => {
-            try {
-                const snapshot = await getDocs(collection(db, "todo"));
-
-                const data: Todo[] = snapshot.docs.map((doc) => {
-                    const d = doc.data();
-
-                    return {
-                        id: doc.id,
-
-                        // 🔥 normalize Firestore weird keys into clean ones
-                        title: d.Title ?? "",
-                        content: d.Content ?? "",
-                        status: d.Status ?? "",
-                        note: d["Note tambahan"] ?? "",
-                    };
-                });
-
-                console.log("CLEAN DATA:", data);
-
-                setTodos(data);
-            } catch (error) {
-                console.error("FETCH ERROR:", error);
-            }
-        };
-
-        fetchTodos();
+        fetchSchedules();
     }, []);
+
+    // 🔍 Get session
+    const getSession = (data: Schedule[], dayIndex: number, hour: number) => {
+        return data.find(
+            s => s.dayIndex === dayIndex && s.slots?.includes(hour)
+        );
+    };
+
+    // 🧱 Table renderer
+    const renderTable = (title: string, data: Schedule[]) => (
+        <div className="card-content-body bg-invert bg-border">
+            <h2>{title}</h2>
+
+            {/* ➕ ADD BUTTON */}
+            {user && (
+                <button
+                    onClick={() => setOpenAdd(true)}
+                    style={{ marginBottom: 10 }}
+                >
+                    + Tambah Jadwal
+                </button>
+            )}
+
+            <div className="jadwal-wrapper">
+                <table className="jadwal-table">
+                    <thead>
+                        <tr>
+                            <th className="jam">Jam</th>
+                            <th>Senin</th>
+                            <th>Selasa</th>
+                            <th>Rabu</th>
+                            <th>Kamis</th>
+                            <th>Jumat</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {hours.map(hour => (
+                            <tr key={hour}>
+                                <td className="jam">{hour}:00</td>
+
+                                {days.map(day => {
+                                    const s = getSession(data, day, hour);
+
+                                    return (
+                                        <td key={day}>
+                                            {s && (
+                                                <div className={`jadwal-container ${s.type}`}>
+                                                    
+                                                    {user && (
+                                                        <div className="crud-button">
+                                                            <button 
+                                                            onClick={() => {
+                                                                    setSelected(s);
+                                                                    setOpenEdit(true);
+                                                                }}
+                                                            className="crud-button-icon material-symbols-rounded">edit</button>
+                                                            <button
+                                                            onClick={() => {
+                                                                    setSelected(s);
+                                                                    setOpenDelete(true);
+                                                                }}
+                                                             className="crud-button-icon material-symbols-rounded">delete</button>
+                                                        </div>
+                                                    )}
+
+                                                    <h1>{s.course}</h1>
+                                                    
+                                                    <h2>{s.room}</h2>
+                                                    <h3 style={{color:"var(--blue-color)"}}>
+                                                        {s.lecturers.join(", ")}
+                                                    </h3>
+
+                                                </div>
+                                            )}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 
     return (
         <>
             <Navbar />
+            <AuthButton />
 
-
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    height: "100vh",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "16px",
-                    margin: "0 10px"
-                }}
-            >
-                {todos.map((todo) => (
-                    <div className="card-content add-hover" key={todo.id}>
-                        
-                        <div className="card-content-header">
-                            <h1 style={{marginLeft: 10}}>{todo.title}</h1>
-                        </div>
-
-                        <div className="card-content-body bg-invert bg-border">
-                            
-                            <h2>{todo.status}</h2>
-
-                            <p>{todo.content}</p>
-
-                            <p style={{ color: "var(--text-muted)", marginTop: 15 }}>
-                                {todo.note}
-                            </p>
-
-                        </div>
-
+            <div className="main-flex">
+                <div className="card-container">
+                    {/* HEADER */}
+                    <div className="card-content-header">
+                        <h1 style={{ marginLeft: 10 }}>
+                            Jadwal Reguler 24
+                        </h1>
                     </div>
-                ))}
+
+                    {/* TABLE */}
+                    {renderTable("TRPL REG Semester 4", trplSchedule)}
+                </div>
             </div>
+
+            {/* 🧩 MODALS */}
+
+            <AddScheduleModal
+                open={openAdd}
+                onClose={() => setOpenAdd(false)}
+                onSuccess={fetchSchedules}
+            />
+
+            <EditScheduleModal
+                open={openEdit}
+                onClose={() => setOpenEdit(false)}
+                data={selected}
+                onSuccess={fetchSchedules}
+            />
+
+            <DeleteScheduleModal
+                open={openDelete}
+                onClose={() => setOpenDelete(false)}
+                data={selected}
+                onSuccess={fetchSchedules}
+            />
         </>
     );
 }
