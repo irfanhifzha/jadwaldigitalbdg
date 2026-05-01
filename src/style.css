@@ -535,6 +535,16 @@
   line-height: normal;
 }
 
+.jadwal-container h4 {
+  margin: -5px 40px 5px 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+  line-height: normal;
+  color: rgb(109, 109, 109)
+}
+
+
 
 /* =========================================================
    UI for edit and other

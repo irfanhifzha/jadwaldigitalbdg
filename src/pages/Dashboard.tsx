@@ -29,6 +29,8 @@ type Schedule = {
     lecturers: string[];
 
     type: "teori" | "praktek";
+
+    note: string;
 };
 
 export default function Dashboard() {
@@ -148,6 +150,7 @@ export default function Dashboard() {
                                                     <h3 style={{color:"var(--blue-color)"}}>
                                                         {s.lecturers.join(", ")}
                                                     </h3>
+                                                    <h4>{s.note}</h4>
 
                                                 </div>
                                             )}

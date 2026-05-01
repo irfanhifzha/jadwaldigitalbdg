@@ -4,11 +4,11 @@ import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 const days = [
-  { label: "Monday", value: 1 },
-  { label: "Tuesday", value: 2 },
-  { label: "Wednesday", value: 3 },
-  { label: "Thursday", value: 4 },
-  { label: "Friday", value: 5 },
+  { label: "Senin", value: 1 },
+  { label: "Selasa", value: 2 },
+  { label: "Rabu", value: 3 },
+  { label: "Kamis", value: 4 },
+  { label: "Jumat", value: 5 }
 ];
 
 const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
@@ -23,8 +23,34 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
   const [dayIndex, setDayIndex] = useState<number>(1);
   const [slots, setSlots] = useState<number[]>([]);
   const [occupiedSlots, setOccupiedSlots] = useState<Set<string>>(new Set());
+  const [note, setNote] = useState("");
 
-  // 🔥 Load conflicts from Firestore
+  const [showInvalid, setShowInvalid] = useState(false);
+
+  // ✅ validation
+  const isInvalid =
+    !course.trim() ||
+    !room.trim() ||
+    !lecturers.trim() ||
+    slots.length === 0;
+
+  // ✅ RESET FORM
+  const resetForm = () => {
+    setCourse("");
+    setRoom("");
+    setLecturers("");
+    setType("teori");
+    setDayIndex(1);
+    setSlots([]);
+    setShowInvalid(false);
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
+  // 🔥 load occupied slots
   const loadConflicts = async () => {
     const snap = await getDocs(collection(db, "schedules"));
     const occupied = new Set<string>();
@@ -42,12 +68,20 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     setOccupiedSlots(occupied);
   };
 
+  // ✅ reset + reload when modal opens
   useEffect(() => {
     if (open) {
       loadConflicts();
+      resetForm();
     }
   }, [open]);
 
+  // 🚨 KEY FIX: reset slots when day changes
+  useEffect(() => {
+    setSlots([]);
+  }, [dayIndex]);
+
+  // toggle slot selection
   const toggleSlot = (slot: number) => {
     const key = `${dayIndex}-${slot}`;
 
@@ -60,7 +94,13 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     );
   };
 
+  // ✅ submit with validation
   const handleSubmit = async () => {
+    if (isInvalid) {
+      setShowInvalid(true);
+      return;
+    }
+
     await addDoc(collection(db, "schedules"), {
       program,
       semester,
@@ -73,45 +113,41 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         .map((l) => l.trim())
         .filter(Boolean),
       type,
+      note,
     });
 
     onSuccess();
-    onClose();
+    handleClose();
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <h2>Tambah Jadwal</h2>
 
-      {/* Course */}
       <input
         placeholder="Course"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
       />
 
-      {/* Room */}
       <input
         placeholder="Room"
         value={room}
         onChange={(e) => setRoom(e.target.value)}
       />
 
-      {/* Lecturers */}
       <input
         placeholder="Lecturers (comma separated)"
         value={lecturers}
         onChange={(e) => setLecturers(e.target.value)}
       />
 
-      {/* Type */}
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>
         <option value="praktek">Praktek</option>
         <option value="tambahan">Matkul Tambahan</option>
       </select>
 
-      {/* Day */}
       <select
         value={dayIndex}
         onChange={(e) => setDayIndex(Number(e.target.value))}
@@ -123,9 +159,22 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         ))}
       </select>
 
-      {/* Slots */}
+      {/* warning */}
+      {showInvalid && (
+        <div style={{
+          background: "#ffe5e5",
+          color: "#b00020",
+          padding: 10,
+          marginTop: 10,
+          borderRadius: 6
+        }}>
+          Semua field wajib diisi dan minimal 1 jam harus dipilih
+        </div>
+      )}
+
+      {/* slots */}
       <div style={{ marginTop: 10 }}>
-        <label>Slots</label>
+        <label>Jam</label>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
           {slotOptions.map((slot) => {
@@ -138,8 +187,8 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
                 key={slot}
                 onClick={() => toggleSlot(slot)}
                 className={`button-jam 
-                    ${isBlocked ? "blocked" : "enabled"} 
-                    ${isSelected && !isBlocked ? "selected" : ""}`}
+                  ${isBlocked ? "blocked" : "enabled"} 
+                  ${isSelected && !isBlocked ? "selected" : ""}`}
               >
                 {slot}
               </div>
@@ -147,8 +196,23 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
           })}
         </div>
       </div>
+      
+      <input
+        placeholder="Note (Optional)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
 
-      <button onClick={handleSubmit} style={{ marginTop: 12 }}>
+      {/* button */}
+      <button
+        onClick={handleSubmit}
+        disabled={isInvalid}
+        style={{
+          marginTop: 12,
+          opacity: isInvalid ? 0.5 : 1,
+          cursor: isInvalid ? "not-allowed" : "pointer"
+        }}
+      >
         Save
       </button>
     </Modal>

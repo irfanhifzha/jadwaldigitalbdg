@@ -6,11 +6,11 @@ import { db } from "../firebase";
 const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
 const days = [
-  { label: "Monday", value: 1 },
-  { label: "Tuesday", value: 2 },
-  { label: "Wednesday", value: 3 },
-  { label: "Thursday", value: 4 },
-  { label: "Friday", value: 5 }
+  { label: "Senin", value: 1 },
+  { label: "Selasa", value: 2 },
+  { label: "Rabu", value: 3 },
+  { label: "Kamis", value: 4 },
+  { label: "Jumat", value: 5 }
 ];
 
 export default function EditScheduleModal({
@@ -26,19 +26,24 @@ export default function EditScheduleModal({
   const [dayIndex, setDayIndex] = useState<number>(1);
   const [slots, setSlots] = useState<number[]>([]);
   const [occupiedSlots, setOccupiedSlots] = useState<Set<string>>(new Set());
+  const [note, setNote] = useState("");
 
+  const [showInvalid, setShowInvalid] = useState(false);
+
+  // ✅ load existing data into form
   useEffect(() => {
     if (data) {
       setCourse(data.course || "");
       setRoom(data.room || "");
       setLecturers((data.lecturers || []).join(", "));
-      setType(data.type || "");
+      setType(data.type || "teori");
       setDayIndex(data.dayIndex || 1);
       setSlots(data.slots || []);
+      setNote(data.note || "");
     }
   }, [data]);
 
-  // 🔥 WEEKDAY ONLY conflict detection (1–5 only)
+  // 🔥 load conflicts (exclude current schedule)
   const loadConflicts = async () => {
     const snap = await getDocs(collection(db, "schedules"));
     const occupied = new Set<string>();
@@ -46,11 +51,9 @@ export default function EditScheduleModal({
     snap.forEach((docSnap) => {
       const d = docSnap.data();
 
-      if (docSnap.id === data.id) return;
+      if (docSnap.id === data?.id) return;
 
       const day = d.dayIndex;
-
-      // 🚨 only consider Monday–Friday
       if (day < 1 || day > 5) return;
 
       (d.slots || []).forEach((slot: number) => {
@@ -62,13 +65,23 @@ export default function EditScheduleModal({
   };
 
   useEffect(() => {
-    if (open) loadConflicts();
+    if (open) {
+      loadConflicts();
+      setShowInvalid(false);
+    }
   }, [open, dayIndex]);
+
+  // ⚠️ IMPORTANT FIX: NO RESET OF SLOTS (keep edit state)
+  // (removed useEffect that resets slots)
 
   const toggleSlot = (slot: number) => {
     const key = `${dayIndex}-${slot}`;
 
-    if (occupiedSlots.has(key)) return;
+    const isBlockedByOthers = occupiedSlots.has(key);
+    const isAlreadySelected = slots.includes(slot);
+
+    // allow if it's already selected (edit state protection)
+    if (isBlockedByOthers && !isAlreadySelected) return;
 
     setSlots((prev) =>
       prev.includes(slot)
@@ -77,7 +90,19 @@ export default function EditScheduleModal({
     );
   };
 
+  // ✅ validation
+  const isInvalid =
+    !course.trim() ||
+    !room.trim() ||
+    !lecturers.trim() ||
+    slots.length === 0;
+
   const handleUpdate = async () => {
+    if (isInvalid) {
+      setShowInvalid(true);
+      return;
+    }
+
     if (!data?.id) return;
 
     await updateDoc(doc(db, "schedules", data.id), {
@@ -90,6 +115,7 @@ export default function EditScheduleModal({
       type,
       dayIndex,
       slots,
+      note,
     });
 
     onSuccess();
@@ -104,15 +130,12 @@ export default function EditScheduleModal({
       <input value={room} onChange={(e) => setRoom(e.target.value)} />
       <input value={lecturers} onChange={(e) => setLecturers(e.target.value)} />
 
-      
-      {/* Type */}
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>
         <option value="praktek">Praktek</option>
-                <option value="tambahan">Matkul Tambahan</option>
+        <option value="tambahan">Matkul Tambahan</option>
       </select>
 
-      {/* Day (unchanged list, but Fri-only logic handled in conflict) */}
       <select
         value={dayIndex}
         onChange={(e) => setDayIndex(Number(e.target.value))}
@@ -124,14 +147,31 @@ export default function EditScheduleModal({
         ))}
       </select>
 
-      {/* Slots */}
+      {/* warning */}
+      {showInvalid && (
+        <div style={{
+          background: "#ffe5e5",
+          color: "#b00020",
+          padding: 10,
+          marginTop: 10,
+          borderRadius: 6
+        }}>
+          Semua field wajib diisi dan minimal 1 jam harus dipilih
+        </div>
+      )}
+
+      {/* slots */}
       <div style={{ marginTop: 10 }}>
-        <label>Slots</label>
+        <label>Jam</label>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {slotOptions.map((slot) => {
             const key = `${dayIndex}-${slot}`;
-            const isBlocked = occupiedSlots.has(key);
+
+            // ✅ FIXED LOGIC
+            const isBlocked =
+              occupiedSlots.has(key) && !slots.includes(slot);
+
             const isSelected = slots.includes(slot);
 
             return (
@@ -139,8 +179,8 @@ export default function EditScheduleModal({
                 key={slot}
                 onClick={() => toggleSlot(slot)}
                 className={`button-jam 
-                    ${isBlocked ? "blocked" : "enabled"} 
-                    ${isSelected && !isBlocked ? "selected" : ""}`}
+                  ${isBlocked ? "blocked" : "enabled"} 
+                  ${isSelected ? "selected" : ""}`}
               >
                 {slot}
               </div>
@@ -149,7 +189,19 @@ export default function EditScheduleModal({
         </div>
       </div>
 
-      <button onClick={handleUpdate}>Update</button>
+    <input placeholder={"Note (Optional)"} value={note} onChange={(e) => setNote(e.target.value)} />
+
+      <button
+        onClick={handleUpdate}
+        disabled={isInvalid}
+        style={{
+          marginTop: 12,
+          opacity: isInvalid ? 0.5 : 1,
+          cursor: isInvalid ? "not-allowed" : "pointer"
+        }}
+      >
+        Update
+      </button>
     </Modal>
   );
 }

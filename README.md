@@ -34,3 +34,12 @@ hah nanti fix...
 1. toggle slot disable masih bisa di assign, karena last, DONT SAVED LAST THINGY
 
 2. the form masih ga konsisten sama
+
+3. ganti hari
+
+
+### visual cue info:
+hijau = teori
+biru = praktek
+grey = tambahan
+
