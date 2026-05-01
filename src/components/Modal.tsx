@@ -16,7 +16,7 @@ export default function Modal({ open, onClose, children }: Props) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <button className="modal-close" onClick={onClose}>
-                    ✕
+                    X
                 </button>
                 {children}
             </div>

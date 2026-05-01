@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar";
-import AuthButton from "../components/AuthButton";
 
 import { useEffect, useState } from "react";
 import {
@@ -88,7 +87,7 @@ export default function Dashboard() {
 
             {/* ➕ ADD BUTTON */}
             {user && (
-                <div style={{ display: "flex", gap: "10px", marginBottom: 10 }}>
+                <div style={{ display: "flex", gap: "5px", marginBottom: 10 }}>
                     
                     <button onClick={() => setOpenAdd(true)}>
                         + Tambah Jadwal
@@ -168,19 +167,22 @@ export default function Dashboard() {
     return (
         <>
             <Navbar />
-            <AuthButton />
+            
 
             <div className="main-flex">
-                <div className="card-container">
+                <div className="card-container" style={{gap:1, fontSize:10, color:"black"}}>
                     {/* HEADER */}
                     <div className="card-content-header">
                         <h1 style={{ marginLeft: 10 }}>
-                            Jadwal Reguler 24
+                            Dashboard Jadwal Matkul
                         </h1>
                     </div>
+                    <p><span className="circle green-color"></span> Hijau = Teori</p>
+                    <p><span className="circle blue-color"></span> Biru = Praktek</p>
+                    <p><span className="circle" style={{border:"1px solid var(--border)"}}></span> Abu = Matkul Tambahan</p>
 
                     {/* TABLE */}
-                    {renderTable("TRPL REG Semester 4", trplSchedule)}
+                    {renderTable("TRPL REG 24", trplSchedule)}
                 </div>
             </div>
 

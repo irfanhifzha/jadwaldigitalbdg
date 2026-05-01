@@ -37,6 +37,10 @@ hah nanti fix...
 
 3. ganti hari
 
+BUAT JUGA>>> 
+
+4. A SYSTEM LIVE NOW TIME BASED "Sedang Berlangsung"
+
 
 ### visual cue info:
 hijau = teori
