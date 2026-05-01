@@ -43,3 +43,4 @@ hijau = teori
 biru = praktek
 grey = tambahan
 
+anim is great
