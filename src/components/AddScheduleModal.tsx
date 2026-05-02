@@ -17,30 +17,35 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
   const [course, setCourse] = useState("");
   const [room, setRoom] = useState("");
   const [lecturers, setLecturers] = useState("");
-  const [type, setType] = useState("teori");
-  const [program] = useState("TRPL");
-  const [semester] = useState<number>(4);
-  const [dayIndex, setDayIndex] = useState<number>(1);
+  const [type, setType] = useState("");
+  const [program, setProgram] = useState("");
+  const [semester, setSemester] = useState<number>(0);
+  const [dayIndex, setDayIndex] = useState<number>(0);
   const [slots, setSlots] = useState<number[]>([]);
   const [occupiedSlots, setOccupiedSlots] = useState<Set<string>>(new Set());
   const [note, setNote] = useState("");
 
   const [showInvalid, setShowInvalid] = useState(false);
 
-  // ✅ validation
+  // validation (UNCHANGED LOGIC FIX ONLY)
   const isInvalid =
+    !program.trim() ||
+    semester === 0 ||
     !course.trim() ||
     !room.trim() ||
     !lecturers.trim() ||
+    !type.trim() ||
+    dayIndex === 0 ||
     slots.length === 0;
 
-  // ✅ RESET FORM
   const resetForm = () => {
+    setProgram("");
+    setSemester(0);
     setCourse("");
     setRoom("");
     setLecturers("");
-    setType("teori");
-    setDayIndex(1);
+    setType("");
+    setDayIndex(0);
     setSlots([]);
     setShowInvalid(false);
   };
@@ -50,25 +55,32 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     onClose();
   };
 
-  // 🔥 load occupied slots
+  // 🔥 FIXED: now includes program + semester
   const loadConflicts = async () => {
     const snap = await getDocs(collection(db, "schedules"));
+
     const occupied = new Set<string>();
 
     snap.forEach((doc) => {
       const d = doc.data();
+
       const day = d.dayIndex;
       const s = d.slots || [];
 
+      const existingProgram = d.program;
+      const existingSemester = d.semester;
+
       s.forEach((slot: number) => {
-        occupied.add(`${day}-${slot}`);
+        // ✅ NEW KEY STRUCTURE (IMPORTANT FIX)
+        occupied.add(
+          `${existingProgram}-${existingSemester}-${day}-${slot}`
+        );
       });
     });
 
     setOccupiedSlots(occupied);
   };
 
-  // ✅ reset + reload when modal opens
   useEffect(() => {
     if (open) {
       loadConflicts();
@@ -76,14 +88,13 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     }
   }, [open]);
 
-  // 🚨 KEY FIX: reset slots when day changes
   useEffect(() => {
     setSlots([]);
   }, [dayIndex]);
 
-  // toggle slot selection
+  // 🔥 FIXED: check includes program + semester
   const toggleSlot = (slot: number) => {
-    const key = `${dayIndex}-${slot}`;
+    const key = `${program}-${semester}-${dayIndex}-${slot}`;
 
     if (occupiedSlots.has(key)) return;
 
@@ -94,7 +105,6 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     );
   };
 
-  // ✅ submit with validation
   const handleSubmit = async () => {
     if (isInvalid) {
       setShowInvalid(true);
@@ -124,6 +134,24 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     <Modal open={open} onClose={handleClose}>
       <h2>Tambah Jadwal</h2>
 
+      <select value={program} onChange={(e) => setProgram(e.target.value)}>
+        <option value="" disabled>Pilih Program Studi</option>
+        <option value="TRPL">TRPL</option>
+        <option value="BISDIG">BISDIG</option>
+      </select>
+
+      <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>
+        <option value={0} disabled>Pilih Semester</option>
+        <option value={1}>1</option>
+        <option value={2}>2</option>
+        <option value={3}>3</option>
+        <option value={4}>4</option>
+        <option value={5}>5</option>
+        <option value={6}>6</option>
+        <option value={7}>7</option>
+        <option value={8}>8</option>
+      </select>
+
       <input
         placeholder="Mata Kuliah"
         value={course}
@@ -143,6 +171,7 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
       />
 
       <select value={type} onChange={(e) => setType(e.target.value)}>
+        <option value="" disabled>Pilih Tipe</option>
         <option value="teori">Teori</option>
         <option value="praktek">Praktek</option>
         <option value="tambahan">Matkul Tambahan</option>
@@ -152,6 +181,7 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         value={dayIndex}
         onChange={(e) => setDayIndex(Number(e.target.value))}
       >
+        <option value={0} disabled>Pilih Hari</option>
         {days.map((d) => (
           <option key={d.value} value={d.value}>
             {d.label}
@@ -159,7 +189,6 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         ))}
       </select>
 
-      {/* warning */}
       {showInvalid && (
         <div style={{
           background: "#ffe5e5",
@@ -172,13 +201,12 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         </div>
       )}
 
-      {/* slots */}
       <div style={{ marginTop: 10 }}>
         <label>Jam</label>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
           {slotOptions.map((slot) => {
-            const key = `${dayIndex}-${slot}`;
+            const key = `${program}-${semester}-${dayIndex}-${slot}`;
             const isBlocked = occupiedSlots.has(key);
             const isSelected = slots.includes(slot);
 
@@ -196,14 +224,13 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
           })}
         </div>
       </div>
-      
+
       <input
         placeholder="Note (Optional)"
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
 
-      {/* button */}
       <button
         onClick={handleSubmit}
         disabled={isInvalid}

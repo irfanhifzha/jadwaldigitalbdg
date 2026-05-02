@@ -55,7 +55,7 @@ type Schedule = {
     note2TugasAgain: string;
 };
 
-export default function TrplReg24() {
+export default function TrplReg25() {
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
@@ -91,7 +91,7 @@ export default function TrplReg24() {
     const [kategori, setKategori] = useState<string | null>(null);
 
     useEffect(() => {
-    getDoc(doc(db, "kelas", "reg24")).then((snap) => {
+    getDoc(doc(db, "kelas", "reg25")).then((snap) => {
         if (snap.exists()) {
         setSemester(snap.data().semester);
         setKategori(snap.data().kategori);
@@ -289,11 +289,13 @@ export default function TrplReg24() {
                 <div className="card-container">
 
                     <div className="card-content-header">
-                        <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
+                        <h1>Dashboard Jadwal Kuliah - TRPL REG 25</h1>
                     </div>
-                    <Dashboard />
 
-                    {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori})`, Schedule)}
+                    <Dashboard />
+                    
+
+                    {renderTable(`TRPL REG 25 - Semester ${semester} (${kategori})`, Schedule)}
                 </div>
             </div>
 

@@ -19,6 +19,7 @@ export default function EditScheduleModal({
   data,
   onSuccess,
 }: any) {
+
   const [course, setCourse] = useState("");
   const [room, setRoom] = useState("");
   const [lecturers, setLecturers] = useState("");
@@ -30,7 +31,7 @@ export default function EditScheduleModal({
 
   const [showInvalid, setShowInvalid] = useState(false);
 
-  // ✅ load existing data into form
+  // ✅ load existing data
   useEffect(() => {
     if (open && data) {
       setCourse(data.course || "");
@@ -43,21 +44,27 @@ export default function EditScheduleModal({
     }
   }, [open, data]);
 
-  // 🔥 load conflicts (exclude current schedule)
+  // 🔥 FIXED: include program + semester + exclude self
   const loadConflicts = async () => {
     const snap = await getDocs(collection(db, "schedules"));
+
     const occupied = new Set<string>();
 
     snap.forEach((docSnap) => {
       const d = docSnap.data();
 
+      // ❌ skip current schedule
       if (docSnap.id === data?.id) return;
 
       const day = d.dayIndex;
+      const program = d.program;
+      const semester = d.semester;
+
+      if (!program || !semester) return;
       if (day < 1 || day > 5) return;
 
       (d.slots || []).forEach((slot: number) => {
-        occupied.add(`${day}-${slot}`);
+        occupied.add(`${program}-${semester}-${day}-${slot}`);
       });
     });
 
@@ -71,10 +78,13 @@ export default function EditScheduleModal({
     }
   }, [open, dayIndex]);
 
+  // 🔥 FIXED toggle logic (now includes program + semester)
   const toggleSlot = (slot: number) => {
-    const key = `${dayIndex}-${slot}`;
+    const program = data?.program;
+    const semester = data?.semester;
 
-    // block if occupied
+    const key = `${program}-${semester}-${dayIndex}-${slot}`;
+
     if (occupiedSlots.has(key)) return;
 
     setSlots((prev) =>
@@ -84,7 +94,6 @@ export default function EditScheduleModal({
     );
   };
 
-  // ✅ validation
   const isInvalid =
     !course.trim() ||
     !room.trim() ||
@@ -120,9 +129,9 @@ export default function EditScheduleModal({
     <Modal open={open} onClose={onClose}>
       <h2>Edit Jadwal</h2>
 
-      <input value={course} placeholder="Mata Kuliah" onChange={(e) => setCourse(e.target.value)} />
-      <input value={room} placeholder="Ruangan" onChange={(e) => setRoom(e.target.value)} />
-      <input value={lecturers} placeholder="Dosen (dipisah dengan koma)" onChange={(e) => setLecturers(e.target.value)} />
+      <input value={course} onChange={(e) => setCourse(e.target.value)} placeholder="Mata Kuliah" />
+      <input value={room} onChange={(e) => setRoom(e.target.value)} placeholder="Ruangan" />
+      <input value={lecturers} onChange={(e) => setLecturers(e.target.value)} placeholder="Dosen (dipisah dengan koma)" />
 
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>
@@ -141,7 +150,6 @@ export default function EditScheduleModal({
         ))}
       </select>
 
-      {/* warning */}
       {showInvalid && (
         <div style={{
           background: "#ffe5e5",
@@ -154,15 +162,16 @@ export default function EditScheduleModal({
         </div>
       )}
 
-      {/* slots */}
       <div style={{ marginTop: 10 }}>
         <label>Jam</label>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {slotOptions.map((slot) => {
-            const key = `${dayIndex}-${slot}`;
+            const program = data?.program;
+            const semester = data?.semester;
 
-            // ✅ FIXED LOGIC
+            const key = `${program}-${semester}-${dayIndex}-${slot}`;
+
             const isBlocked =
               occupiedSlots.has(key) && !slots.includes(slot);
 
@@ -183,7 +192,7 @@ export default function EditScheduleModal({
         </div>
       </div>
 
-    <input placeholder={"Note (Optional)"} value={note} onChange={(e) => setNote(e.target.value)} />
+      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (Optional)" />
 
       <button
         onClick={handleUpdate}

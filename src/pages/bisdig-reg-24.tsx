@@ -55,8 +55,8 @@ type Schedule = {
     note2TugasAgain: string;
 };
 
-export default function TrplReg24() {
-    const [Schedule, setSchedule] = useState<Schedule[]>([]);
+export default function BisdigReg24() {
+    const [trplSchedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
     const [editMode, setEditMode] = useState(false);
@@ -109,7 +109,7 @@ export default function TrplReg24() {
         })) as Schedule[];
 
         setSchedule(
-            data.filter(d => d.program === "TRPL" && d.semester === semester)
+            data.filter(d => d.program === "BISDIG" && d.semester === semester)
         );
     };
 
@@ -289,11 +289,11 @@ export default function TrplReg24() {
                 <div className="card-container">
 
                     <div className="card-content-header">
-                        <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
+                        <h1>Dashboard Jadwal Kuliah - BISDIG REG 24</h1>
                     </div>
                     <Dashboard />
 
-                    {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori})`, Schedule)}
+                    {renderTable(`BISDIG REG 24 - Semester ${semester} (${kategori})`, trplSchedule)}
                 </div>
             </div>
 

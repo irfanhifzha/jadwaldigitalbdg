@@ -31,7 +31,7 @@
     border-color: var(--border-hover);
 }
 
-.circle {
+.circle-static {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -40,6 +40,24 @@
   vertical-align: middle;
 }
 
+.circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 3px;
+  vertical-align: middle;
+  background-color: red;
+}
+
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.5;
+  }
+}
 
 
 /* =========================================================
@@ -116,7 +134,7 @@
 
 /* Title */
 .card-menu h1 {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     color: var(--black);
     margin: 0;
@@ -256,6 +274,11 @@
     border-radius: 14px;
     border: 1px solid var(--border);
     transition: all 0.2s ease;
+}
+
+.card-content p {
+  color: var(--black);
+  font-size: 8px;
 }
 
 .card-content-header {
@@ -657,7 +680,9 @@
     border-radius: 8px;
     width: 700px;
     gap: 8px;
-        margin: 0px 20px;
+        margin: 20px 20px;
+        max-height: 500px;
+        overflow-y: scroll;
     position: relative;
 
     /* animation */
