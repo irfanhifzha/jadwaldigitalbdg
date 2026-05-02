@@ -32,13 +32,15 @@
 }
 
 .circle {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   display: inline-block;
-  margin: 6px;
+  margin: 3px;
   vertical-align: middle;
 }
+
+
 
 /* =========================================================
    COLOR UTILITIES (BACKGROUND)
@@ -50,6 +52,13 @@
 .red-color { background: var(--red-bg); color: var(--red-color); }
 .orange-color { background: var(--orange-bg); color: var(--orange-color); }
 .white-color { background: white; }
+
+.blue-bg { background: var(--blue-color); }
+.purple-bg { background: var(--purple-color); }
+.green-bg { background: var(--green-color); }
+.red-bg { background: var(--red-color); }
+.orange-bg { background: var(--orange-color); }
+.grey-bg { background: rgb(236, 236, 236);}
 
 
 /* =========================================================
@@ -63,6 +72,8 @@
 .orange-text { color: var(--orange-color); }
 .white-text { background: var(--white); }
 .black-text { background: var(--black); }
+
+.muted-text { color: var(--text-muted); }
 
 
 /* =========================================================
@@ -105,7 +116,7 @@
 
 /* Title */
 .card-menu h1 {
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--black);
     margin: 0;
@@ -188,11 +199,22 @@
    ========================================================= */
 
 .bg-invert {
-    background: var(--white);
+    background: white;
     padding: 20px 20px;
     border-radius: 20px;
     color: var(--black)
 }
+
+.bg-invert-new {
+    background: white;
+    padding: 1px 3px 10px 3px;
+    margin: 5px 5px 0px 5px;
+    border-radius: 10px;
+    color: var(--black);
+
+    position: relative;
+}
+
 
 .bg-border {
   border: 1px solid var(--border);
@@ -224,13 +246,13 @@
 
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
 }
 
 .card-content {
-    max-width: 440px;
+    max-width: fit-content;
     height: fit-content;
-    padding: 14px 16px;
+    padding: 8px 12px;
     border-radius: 14px;
     border: 1px solid var(--border);
     transition: all 0.2s ease;
@@ -265,6 +287,7 @@
 .card-content-body h2 {
     font-weight: 700;
     font-size: 1rem;
+    overflow-wrap: break-word;
 }
 
 .card-content-body p {
@@ -402,6 +425,8 @@
   -webkit-overflow-scrolling: touch;
   border-radius: 20px;
   border: 1px solid var(--border);
+      animation: fadeUp 0.5s ease-out;
+  overflow-y: hidden;
 }
 
 /* =========================================================
@@ -502,7 +527,7 @@
 .tambahan {
   border: 1px solid var(--border);
   background-color: rgb(236, 236, 236);
-  color: rgb(112, 112, 112);
+  color: var(--grey-color);
 }
 
 
@@ -521,6 +546,8 @@
       transition: all 0.2s ease;
   height: 100%;
   justify-content: center;
+  margin: 0px 0px 10px 0px;
+  
 }
 
 .jadwal-container h1 {
@@ -568,23 +595,27 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center; /* or flex-end if you want inner alignment */
+    justify-content: end;
     align-items: end;
 
     margin: 0 5px;
+    flex-wrap: wrap;
+    grid-auto-flow: column;   /* fill vertically, then new column */
+    direction: rtl;
+
+    max-height: 84px;
 }
 
 .crud-button button.crud-button-icon {
-    margin: 5px 5px 3px 5px;
+    margin: 7px 5px 0px 0px;
     padding: 2px;
     border-radius: 5px;
     background-color: white;
-    color: var(--blue-color);
     font-size: 15px;
     user-select: none;
     cursor: pointer;
 
-    border: 1px solid white;
+    border: 1px solid var(--border);
 
     transition: all 0.2s ease;
 }
@@ -593,6 +624,11 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
     border: 1px solid var(--blue-color)
+}
+
+.crud-button button.crud-button-icon.no-hover:hover {
+    border: 1px solid var(--border);
+    transform: none; /* optional: cancel lift */
 }
 
 /* =========================================================
@@ -619,8 +655,9 @@
     background: white;
     padding: 40px;
     border-radius: 8px;
-    max-width: 600px;
+    width: 700px;
     gap: 8px;
+        margin: 0px 20px;
     position: relative;
 
     /* animation */
@@ -709,6 +746,27 @@ select:disabled {
   color: #999;
   cursor: not-allowed;
 }
+
+textarea {
+  width: 100%;
+  max-width: 500px;
+  min-height: 30px;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: inherit;
+
+  color: #222;
+  background-color: #ffffff;
+
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+
+  outline: none;
+
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+
 
 /* Optional: nicer select arrow spacing */
 select {

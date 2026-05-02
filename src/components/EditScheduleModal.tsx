@@ -32,7 +32,7 @@ export default function EditScheduleModal({
 
   // ✅ load existing data into form
   useEffect(() => {
-    if (data) {
+    if (open && data) {
       setCourse(data.course || "");
       setRoom(data.room || "");
       setLecturers((data.lecturers || []).join(", "));
@@ -41,7 +41,7 @@ export default function EditScheduleModal({
       setSlots(data.slots || []);
       setNote(data.note || "");
     }
-  }, [data]);
+  }, [open, data]);
 
   // 🔥 load conflicts (exclude current schedule)
   const loadConflicts = async () => {
@@ -71,17 +71,11 @@ export default function EditScheduleModal({
     }
   }, [open, dayIndex]);
 
-  // ⚠️ IMPORTANT FIX: NO RESET OF SLOTS (keep edit state)
-  // (removed useEffect that resets slots)
-
   const toggleSlot = (slot: number) => {
     const key = `${dayIndex}-${slot}`;
 
-    const isBlockedByOthers = occupiedSlots.has(key);
-    const isAlreadySelected = slots.includes(slot);
-
-    // allow if it's already selected (edit state protection)
-    if (isBlockedByOthers && !isAlreadySelected) return;
+    // block if occupied
+    if (occupiedSlots.has(key)) return;
 
     setSlots((prev) =>
       prev.includes(slot)
@@ -126,9 +120,9 @@ export default function EditScheduleModal({
     <Modal open={open} onClose={onClose}>
       <h2>Edit Jadwal</h2>
 
-      <input value={course} onChange={(e) => setCourse(e.target.value)} />
-      <input value={room} onChange={(e) => setRoom(e.target.value)} />
-      <input value={lecturers} onChange={(e) => setLecturers(e.target.value)} />
+      <input value={course} placeholder="Mata Kuliah" onChange={(e) => setCourse(e.target.value)} />
+      <input value={room} placeholder="Ruangan" onChange={(e) => setRoom(e.target.value)} />
+      <input value={lecturers} placeholder="Dosen (dipisah dengan koma)" onChange={(e) => setLecturers(e.target.value)} />
 
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>

@@ -125,19 +125,19 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
       <h2>Tambah Jadwal</h2>
 
       <input
-        placeholder="Course"
+        placeholder="Mata Kuliah"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
       />
 
       <input
-        placeholder="Room"
+        placeholder="Ruangan"
         value={room}
         onChange={(e) => setRoom(e.target.value)}
       />
 
       <input
-        placeholder="Lecturers (comma separated)"
+        placeholder="Dosen (dipisah dengan koma)"
         value={lecturers}
         onChange={(e) => setLecturers(e.target.value)}
       />

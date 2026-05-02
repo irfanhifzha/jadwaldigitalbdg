@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
-import Asdf from "./pages/Asdf";
+import TrplReg24  from "./pages/trpl-reg-24";
 
 
 function App() {
@@ -11,9 +10,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/trpl-reg-24" element={<TrplReg24 />} />
 
-        <Route path="/asdf" element={<Asdf />} />
+       
 
 
         {/* 404 route */}
