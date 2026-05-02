@@ -48,3 +48,9 @@ biru = praktek
 grey = tambahan
 
 anim is great
+
+
+untuk commit ke 10 nanti next todo:
+1. buat limit to semester bisa select option terbatas hanya yg di reg25 / reg24
+
+2. fix optimize db sehinga bisa jamnya eksekutif

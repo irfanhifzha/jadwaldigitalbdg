@@ -244,6 +244,29 @@ export default function TrplReg25() {
                                                         <>
                                                             {s.titleTugas && (
                                                                 <div className="card-content-body bg-invert-new" style={{display:"block"}}>
+
+                                                                     {/* adain lagi crud for tugas */}
+                                                                    {user && editMode && (
+                                                                        <div className="crud-button">
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                    setSelected(s);
+                                                                                    setOpenTugasEdit(true);
+                                                                                }}
+                                                                            className="crud-button-icon material-symbols-rounded ">edit</button>
+                                                                        
+
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                    setSelected(s);
+                                                                                    setOpenTugasDelete(true);
+                                                                                }}
+                                                                            className="crud-button-icon material-symbols-rounded ">delete</button>
+
+                                                                        </div>
+                                                                    )}
+                                                                    
+                                                                    
                                                                     <h1>
                                                                         <div className={`circle ${s.statusTugas}`}></div>
                                                                         {s.titleTugas}
@@ -256,6 +279,29 @@ export default function TrplReg25() {
 
                                                             {s.titleTugasAgain && (
                                                                 <div className="card-content-body bg-invert-new" style={{display:"block"}}>
+
+                                                                     {/* adain lagi crud for tugas */}
+                                                                    {user && editMode && (
+                                                                        <div className="crud-button">
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                    setSelected(s);
+                                                                                    setOpenTugasEditAgain(true);
+                                                                                }}
+                                                                            className="crud-button-icon material-symbols-rounded ">edit</button>
+                                                                        
+
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                    setSelected(s);
+                                                                                    setOpenTugasDeleteAgain(true);
+                                                                                }}
+                                                                            className="crud-button-icon material-symbols-rounded ">delete</button>
+
+                                                                        </div>
+                                                                    )}
+
+                                                                    
                                                                     <h1>
                                                                         <div className={`circle ${s.statusTugasAgain}`}></div>
                                                                         {s.titleTugasAgain}
