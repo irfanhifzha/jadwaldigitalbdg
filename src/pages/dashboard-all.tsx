@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import {
     collection,
     getDocs,
-    getDoc,
-    doc
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -28,7 +26,7 @@ import Dashboard from "../components/Dashboard";
 type Schedule = {
     id?: string;
 
-    program: "TRPL" | "BISDIG";
+    program: "TRPL" | "BISDIG" | "BISDIGeks";
     semester: number;
 
     dayIndex: number;
@@ -55,12 +53,12 @@ type Schedule = {
     note2TugasAgain: string;
 };
 
-export default function TrplReg24() {
+export default function DashboardAll() {
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
     const [editMode, setEditMode] = useState(false);
-    const [tugasVisibility, setTugasVisibility] = useState(true);
+    const [tugasVisibility, setTugasVisibility] = useState(false);
 
     // modals (UNCHANGED)
     const [openAdd, setOpenAdd] = useState(false);
@@ -78,7 +76,7 @@ export default function TrplReg24() {
     const [selected, setSelected] = useState<Schedule | null>(null);
 
     const days = [1, 2, 3, 4, 5];
-    const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    const hours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
     // auth
     useEffect(() => {
@@ -86,23 +84,7 @@ export default function TrplReg24() {
         return () => unsub();
     }, []);
 
-    // fetch data semester
-    const [semester, setSemester] = useState<number | null>(null);
-    const [kategori, setKategori] = useState<string | null>(null);
-    const [sks_semesterini, setSKS] = useState<number | null>(null);
-
-
-    useEffect(() => {
-    getDoc(doc(db, "kelas", "trplreg24")).then((snap) => {
-        if (snap.exists()) {
-        setSemester(snap.data().semester);
-        setKategori(snap.data().kategori);
-        setSKS(snap.data().sks_semesterini);
-        }
-    });
-    }, []);
-
-    // FETCH (FIXED FILTER ONLY)
+    // FETCH (FIXED)
     const fetchSchedules = async () => {
         const snap = await getDocs(collection(db, "schedules"));
 
@@ -111,25 +93,26 @@ export default function TrplReg24() {
             ...doc.data()
         })) as Schedule[];
 
+        const allowedPrograms = ["TRPL", "BISDIG", "BISDIGeks"];
+
         setSchedule(
-            data.filter(d => d.program === "TRPL" && d.semester === semester)
+            data.filter(d => allowedPrograms.includes(d.program))
         );
     };
 
+    // CALL FETCH (FIXED)
     useEffect(() => {
-    if (semester !== null) {
         fetchSchedules();
-    }
-    }, [semester]);
+    }, []);
 
-    // SESSION LOOKUP (SIMPLE, NO RESTRICTION)
-    const getSession = (data: Schedule[], dayIndex: number, hour: number) => {
-        return data.find(
+    // SESSION LOOKUP (MULTIPLE SUPPORT)
+    const getSessions = (data: Schedule[], dayIndex: number, hour: number) => {
+        return data.filter(
             s =>
                 s.dayIndex === dayIndex &&
                 Array.isArray(s.slots) &&
                 s.slots.includes(hour)
-        ) || null;
+        );
     };
 
     const renderTable = (title: string, data: Schedule[]) => (
@@ -173,12 +156,12 @@ export default function TrplReg24() {
                                 <td className="jam">{hour}:00</td>
 
                                 {days.map(day => {
-                                    const s = getSession(data, day, hour);
+                                    const sessions = getSessions(data, day, hour);
 
                                     return (
                                         <td key={day}>
-                                            {s && (
-                                                <div className={`jadwal-container add-hover ${s.type}`}>
+                                            {sessions.map((s, idx) => (
+                                                <div key={idx} className={`jadwal-container-new add-hover ${s.type}`}>
 
                                                     {/* CRUD BUTTONS (UNCHANGED) */}
                                                     {user && editMode && (
@@ -234,6 +217,9 @@ export default function TrplReg24() {
                                                     )}
 
                                                     {/* CONTENT (UNCHANGED) */}
+                                                    <h3 style={{marginTop:10, color:"var(--red-color)"}}>
+                                                        {s.program} - Sem {s.semester}
+                                                    </h3>
                                                     <h1>{s.course}</h1>
                                                     <h2>{s.room}</h2>
                                                     <h3 style={{color:"var(--blue-color)"}}>
@@ -246,29 +232,28 @@ export default function TrplReg24() {
                                                     {tugasVisibility && (
                                                         <>
                                                             {s.titleTugas && (
-                                                                <div className="card-content-body bg-invert-new" style={{display:"block"}}>
+                                                                <div className="card-content-body bg-invert-new" style={{display:"block", marginBottom:10}}>
 
-                                                                    {/* adain lagi crud for tugas */}
                                                                     {user && editMode && (
                                                                         <div className="crud-button">
-                                                                        <button
-                                                                            onClick={() => {
+                                                                            <button
+                                                                                onClick={() => {
                                                                                     setSelected(s);
                                                                                     setOpenTugasEdit(true);
                                                                                 }}
-                                                                            className="crud-button-icon material-symbols-rounded ">edit</button>
-                                                                        
+                                                                                className="crud-button-icon material-symbols-rounded "
+                                                                            >edit</button>
 
-                                                                        <button
-                                                                            onClick={() => {
+                                                                            <button
+                                                                                onClick={() => {
                                                                                     setSelected(s);
                                                                                     setOpenTugasDelete(true);
                                                                                 }}
-                                                                            className="crud-button-icon material-symbols-rounded ">delete</button>
-
+                                                                                className="crud-button-icon material-symbols-rounded "
+                                                                            >delete</button>
                                                                         </div>
                                                                     )}
-                                                                    
+
                                                                     <h1>
                                                                         <div className={`circle ${s.statusTugas}`}></div>
                                                                         {s.titleTugas}
@@ -282,27 +267,25 @@ export default function TrplReg24() {
                                                             {s.titleTugasAgain && (
                                                                 <div className="card-content-body bg-invert-new" style={{display:"block"}}>
 
-                                                                     {/* adain lagi crud for tugas */}
                                                                     {user && editMode && (
                                                                         <div className="crud-button">
-                                                                        <button
-                                                                            onClick={() => {
+                                                                            <button
+                                                                                onClick={() => {
                                                                                     setSelected(s);
                                                                                     setOpenTugasEditAgain(true);
                                                                                 }}
-                                                                            className="crud-button-icon material-symbols-rounded ">edit</button>
-                                                                        
+                                                                                className="crud-button-icon material-symbols-rounded "
+                                                                            >edit</button>
 
-                                                                        <button
-                                                                            onClick={() => {
+                                                                            <button
+                                                                                onClick={() => {
                                                                                     setSelected(s);
                                                                                     setOpenTugasDeleteAgain(true);
                                                                                 }}
-                                                                            className="crud-button-icon material-symbols-rounded ">delete</button>
-
+                                                                                className="crud-button-icon material-symbols-rounded "
+                                                                            >delete</button>
                                                                         </div>
                                                                     )}
-
 
                                                                     <h1>
                                                                         <div className={`circle ${s.statusTugasAgain}`}></div>
@@ -317,7 +300,7 @@ export default function TrplReg24() {
                                                     )}
 
                                                 </div>
-                                            )}
+                                            ))}
                                         </td>
                                     );
                                 })}
@@ -337,11 +320,11 @@ export default function TrplReg24() {
                 <div className="card-container">
 
                     <div className="card-content-header">
-                        <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
+                        <h1>Dashboard Jadwal Kuliah ALL</h1>
                     </div>
                     <Dashboard />
 
-                    {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
+                    {renderTable(`ALL JADWAL`, Schedule)}
                 </div>
             </div>
 

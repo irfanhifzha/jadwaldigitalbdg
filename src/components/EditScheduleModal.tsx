@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import { updateDoc, doc, getDocs, collection } from "firebase/firestore";
 import { db } from "../firebase";
 
-const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
 const days = [
   { label: "Senin", value: 1 },

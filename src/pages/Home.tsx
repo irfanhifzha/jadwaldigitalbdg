@@ -40,18 +40,25 @@ function Home() {
                     </button>
 
 
-
-                    {/* comming soon */}
                     <div>----</div>
+        
 
-                    <button className="card-menu bg-hover-r" onClick={() => navigate("/bisdig-eks-24")}>
-                        <span className="material-symbols-rounded bg-border white-color">refresh</span>
-                        <h1>Jadwal BISDIG EKS 24 <br></br>(Work in Progress)</h1>
+                    <button className="card-menu bg-hover-b" onClick={() => navigate("/bisdig-eks-24")}>
+                        <span className="material-symbols-rounded bg-border white-color">chart_data</span>
+                        <h1>Jadwal BISDIG EKS 24</h1>
                     </button>
 
-                    <button className="card-menu bg-hover-r" onClick={() => navigate("/bisdig-eks-25")}>
-                        <span className="material-symbols-rounded bg-border white-color">refresh</span>
-                        <h1>Jadwal BISDIG EKS 25 <br></br>(Work in Progress)</h1>
+                    <button className="card-menu bg-hover-p" onClick={() => navigate("/bisdig-eks-25")}>
+                        <span className="material-symbols-rounded bg-border white-color">domain</span>
+                        <h1>Jadwal BISDIG EKS 25</h1>
+                    </button>
+
+                    <div>----</div>
+        
+
+                    <button className="card-menu bg-hover-r" onClick={() => navigate("/dashboard-all")}>
+                        <span className="material-symbols-rounded bg-border white-color">experiment</span>
+                        <h1>Dashboard ALL <br></br> (Eksperimental)</h1>
                     </button>
 
 

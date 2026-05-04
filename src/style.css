@@ -606,6 +606,57 @@
 }
 
 
+/* ----- */
+
+.jadwal-container-new {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+      transition: all 0.2s ease;
+  height: fit-content;
+  justify-content: center;
+  margin: 0px 0px 10px 0px;
+  
+}
+
+.jadwal-container-new h1 {
+  margin: 5px 40px 0px 8px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-align: start;
+  line-height: normal;
+}
+
+.jadwal-container-new h2 {
+  margin: 5px 40px 0px 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+}
+
+.jadwal-container-new h3 {
+  margin: 0px 40px 10px 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+  line-height: normal;
+}
+
+.jadwal-container-new h4 {
+  margin: -5px 40px 10px 8px;
+  font-weight: 400;
+  font-size: 0.5rem;
+  text-align: start;
+  line-height: normal;
+  color: rgb(109, 109, 109)
+}
+
+
+
+
 
 /* =========================================================
    UI for edit and other

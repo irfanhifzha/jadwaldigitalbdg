@@ -11,7 +11,7 @@ const days = [
   { label: "Jumat", value: 5 }
 ];
 
-const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
 export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
   const [course, setCourse] = useState("");
@@ -137,7 +137,8 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
       <select value={program} onChange={(e) => setProgram(e.target.value)}>
         <option value="" disabled>Pilih Program Studi</option>
         <option value="TRPL">TRPL</option>
-        <option value="BISDIG">BISDIG</option>
+        <option value="BISDIG">BISDIG-Reguler</option>
+        <option value="BISDIGeks">BISDIG-Eksekutif</option>
       </select>
 
       <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>

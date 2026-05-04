@@ -56,7 +56,7 @@ type Schedule = {
 };
 
 export default function BisdigReg24() {
-    const [trplSchedule, setSchedule] = useState<Schedule[]>([]);
+    const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
     const [editMode, setEditMode] = useState(false);
@@ -89,12 +89,14 @@ export default function BisdigReg24() {
     // fetch data semester
     const [semester, setSemester] = useState<number | null>(null);
     const [kategori, setKategori] = useState<string | null>(null);
+    const [sks_semesterini, setSKS] = useState<number | null>(null);
 
     useEffect(() => {
-    getDoc(doc(db, "kelas", "reg24")).then((snap) => {
+    getDoc(doc(db, "kelas", "bisdigreg24")).then((snap) => {
         if (snap.exists()) {
         setSemester(snap.data().semester);
         setKategori(snap.data().kategori);
+        setSKS(snap.data().sks_semesterini);
         }
     });
     }, []);
@@ -339,7 +341,7 @@ export default function BisdigReg24() {
                     </div>
                     <Dashboard />
 
-                    {renderTable(`BISDIG REG 24 - Semester ${semester} (${kategori})`, trplSchedule)}
+                    {renderTable(`BISDIG REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
                 </div>
             </div>
 

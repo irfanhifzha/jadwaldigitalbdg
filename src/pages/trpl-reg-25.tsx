@@ -89,12 +89,15 @@ export default function TrplReg25() {
     // fetch data semester
     const [semester, setSemester] = useState<number | null>(null);
     const [kategori, setKategori] = useState<string | null>(null);
+    const [sks_semesterini, setSKS] = useState<number | null>(null);
+
 
     useEffect(() => {
-    getDoc(doc(db, "kelas", "reg25")).then((snap) => {
+    getDoc(doc(db, "kelas", "trplreg25")).then((snap) => {
         if (snap.exists()) {
         setSemester(snap.data().semester);
         setKategori(snap.data().kategori);
+        setSKS(snap.data().sks_semesterini);
         }
     });
     }, []);
@@ -341,7 +344,7 @@ export default function TrplReg25() {
                     <Dashboard />
                     
 
-                    {renderTable(`TRPL REG 25 - Semester ${semester} (${kategori})`, Schedule)}
+                    {renderTable(`TRPL REG 25 - Semester ${semester} (${kategori})  / SKS ${sks_semesterini}`, Schedule)}
                 </div>
             </div>
 

@@ -28,7 +28,7 @@ import Dashboard from "../components/Dashboard";
 type Schedule = {
     id?: string;
 
-    program: "TRPL" | "BISDIG";
+    program: "TRPL" | "BISDIG" | "BISDIGeks";
     semester: number;
 
     dayIndex: number;
@@ -55,7 +55,7 @@ type Schedule = {
     note2TugasAgain: string;
 };
 
-export default function TrplReg24() {
+export default function BisdigEks25() {
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
@@ -78,7 +78,7 @@ export default function TrplReg24() {
     const [selected, setSelected] = useState<Schedule | null>(null);
 
     const days = [1, 2, 3, 4, 5];
-    const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    const hours = [16, 17, 18, 19, 20, 21, 22];
 
     // auth
     useEffect(() => {
@@ -91,9 +91,8 @@ export default function TrplReg24() {
     const [kategori, setKategori] = useState<string | null>(null);
     const [sks_semesterini, setSKS] = useState<number | null>(null);
 
-
     useEffect(() => {
-    getDoc(doc(db, "kelas", "trplreg24")).then((snap) => {
+    getDoc(doc(db, "kelas", "bisdigeks25")).then((snap) => {
         if (snap.exists()) {
         setSemester(snap.data().semester);
         setKategori(snap.data().kategori);
@@ -112,7 +111,7 @@ export default function TrplReg24() {
         })) as Schedule[];
 
         setSchedule(
-            data.filter(d => d.program === "TRPL" && d.semester === semester)
+            data.filter(d => d.program === "BISDIGeks" && d.semester === semester)
         );
     };
 
@@ -248,7 +247,7 @@ export default function TrplReg24() {
                                                             {s.titleTugas && (
                                                                 <div className="card-content-body bg-invert-new" style={{display:"block"}}>
 
-                                                                    {/* adain lagi crud for tugas */}
+                                                                     {/* adain lagi crud for tugas */}
                                                                     {user && editMode && (
                                                                         <div className="crud-button">
                                                                         <button
@@ -268,7 +267,7 @@ export default function TrplReg24() {
 
                                                                         </div>
                                                                     )}
-                                                                    
+
                                                                     <h1>
                                                                         <div className={`circle ${s.statusTugas}`}></div>
                                                                         {s.titleTugas}
@@ -337,11 +336,11 @@ export default function TrplReg24() {
                 <div className="card-container">
 
                     <div className="card-content-header">
-                        <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
+                        <h1>Dashboard Jadwal Kuliah - BISDIG EKS 25</h1>
                     </div>
                     <Dashboard />
 
-                    {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
+                    {renderTable(`BISDIG EKS 25 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
                 </div>
             </div>
 
