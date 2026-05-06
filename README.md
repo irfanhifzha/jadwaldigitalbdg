@@ -15,49 +15,28 @@ npm run dev
 npm run dev -- --host 
 ```
 
+=======
 
+quality life update, nilai tambahan kalau bisa:
+1. constraint data input all (nama dosen -> matkul ngajar apa, toogle siapa dan kapan aja matkul itu, select semester yg aktif only, dll...)
+2. fix optimize db
+3. ganti hari bisa drag edit schedules yang ada
+4. live now new feature to view and edit, is it -> (Sudah absen, Belum absen, Tidak ada Pertemuan) 
+5. ...
 
-+todo add
+=======
 
-1. jangan input null course and room as minimal.
-2. Note tambahan, tugas apa.
-3. div logout, login as who.
-4. buat dashboard for other class.
+DONE TODO versi ini:
+- dynamic title web
+- filtering in jadwal all
+- live now 
+- react submit button to loading 3sec after, terus biasa lagi
+- ...
+- nanti versi selanjutnya ganti lagi todo
 
+TODO:
+- buat kalender each kelas (dibawah jadwal)
+- input dan form css rapihin
+- ...
 
-5. buat title dashboard "TPRL REG 24" bukan sem 4.
-
-6. drag edit div (in edit mode)
-
-hah nanti fix...
-
-1. toggle slot disable masih bisa di assign, karena last, DONT SAVED LAST THINGY
-
-2. the form masih ga konsisten sama
-
-3. ganti hari
-
-BUAT JUGA>>> 
-
-4. A SYSTEM LIVE NOW TIME BASED "Sedang Berlangsung"
-
-
-### visual cue info:
-hijau = teori
-biru = praktek
-grey = tambahan
-
-anim is great
-
-
-untuk commit ke 10 nanti next todo:
-1. buat limit to semester bisa select option terbatas hanya yg di reg25 / reg24
-
-2. fix optimize db sehinga bisa jamnya eksekutif
-
-
-....
-
-ga ada constrain input pisan cuy... 
-
-bisa ke semester lain, eksekutif bisa ke jam pagi, and etc...
+=======

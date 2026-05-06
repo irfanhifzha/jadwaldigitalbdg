@@ -36,7 +36,13 @@ export default function AddTugasModalAgain({
     !titleTugasAgain.trim() ||
     !h1TugasAgain.trim();
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async () => {
+
+    setLoading(true);
+
+
     if (isInvalid) {
       setShowInvalid(true);
       return;
@@ -52,6 +58,8 @@ export default function AddTugasModalAgain({
       note1TugasAgain,
       note2TugasAgain,
     });
+
+    setLoading(false);
 
     onSuccess();
     onClose();
@@ -114,14 +122,14 @@ export default function AddTugasModalAgain({
 
       <button
         onClick={handleSubmit}
-        disabled={isInvalid}
+        disabled={isInvalid || loading}
         style={{
           marginTop: 12,
           opacity: isInvalid ? 0.5 : 1,
           cursor: isInvalid ? "not-allowed" : "pointer",
         }}
       >
-        Simpan Tugas
+        {loading ? ("Loading...") : ("Simpan")}
       </button>
     </Modal>
   );

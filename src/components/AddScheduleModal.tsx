@@ -105,11 +105,16 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     );
   };
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async () => {
+
+    setLoading(true);
+
     if (isInvalid) {
       setShowInvalid(true);
       return;
-    }
+    } 
 
     await addDoc(collection(db, "schedules"), {
       program,
@@ -125,6 +130,8 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
       type,
       note,
     });
+
+    setLoading(false);
 
     onSuccess();
     handleClose();
@@ -234,14 +241,14 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
 
       <button
         onClick={handleSubmit}
-        disabled={isInvalid}
+        disabled={isInvalid || loading}
         style={{
           marginTop: 12,
           opacity: isInvalid ? 0.5 : 1,
           cursor: isInvalid ? "not-allowed" : "pointer"
         }}
       >
-        Save
+        {loading ? ("Loading...") : ("Simpan")}
       </button>
     </Modal>
   );

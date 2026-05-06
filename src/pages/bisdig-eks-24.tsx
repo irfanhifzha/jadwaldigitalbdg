@@ -56,6 +56,12 @@ type Schedule = {
 };
 
 export default function BisdigEks24() {
+    
+    useEffect(() => {
+        document.title = "Jadwal ADB | BISDIG EKS 24";
+    }, []);
+
+
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
@@ -79,6 +85,37 @@ export default function BisdigEks24() {
 
     const days = [1, 2, 3, 4, 5];
     const hours = [16, 17, 18, 19, 20, 21, 22];
+
+    // new live
+    const [now, setNow] = useState(new Date());
+
+        useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(new Date());
+        }, 60000); // update tiap 1 menit
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const currentDayIndex = () => {
+    const day = now.getDay();
+        // JS: Sunday=0 ... Saturday=6
+        // your system: Monday=1 ... Friday=5
+
+        if (day === 0 || day === 6) return -1;
+        return day;
+    };
+
+    const currentHour = now.getHours();
+
+
+    const liveMatkul = Schedule.find(s =>
+        s.dayIndex === currentDayIndex() &&
+        Array.isArray(s.slots) &&
+        s.slots.includes(currentHour)
+    );
+
+    // end of live
 
     // auth
     useEffect(() => {
@@ -178,6 +215,13 @@ export default function BisdigEks24() {
                                         <td key={day}>
                                             {s && (
                                                 <div className={`jadwal-container add-hover ${s.type}`}>
+
+                                                    {/* LIVE BADGE (ONLY FOR ACTIVE CLASS) */}
+                                                    {liveMatkul && liveMatkul.id === s.id && (
+                                                        <div className="live-jadwal">
+                                                            <div className="circle-blink green-bg"></div><span> Kelas Live | Segera Absen</span>
+                                                        </div>
+                                                    )}
 
                                                     {/* CRUD BUTTONS (UNCHANGED) */}
                                                     {user && editMode && (

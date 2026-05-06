@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
 
 function Home() {
+
+    useEffect(() => {
+            document.title = "Jadwal Akademi Digital Bandung";
+    }, []);
 
     const navigate = useNavigate();
 
@@ -58,7 +63,7 @@ function Home() {
 
                     <button className="card-menu bg-hover-r" onClick={() => navigate("/dashboard-all")}>
                         <span className="material-symbols-rounded bg-border white-color">experiment</span>
-                        <h1>Dashboard ALL <br></br> (Eksperimental)</h1>
+                        <h1>Jadwal ALL (Eksperimental)</h1>
                     </button>
 
 

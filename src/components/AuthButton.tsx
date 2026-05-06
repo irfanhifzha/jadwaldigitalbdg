@@ -25,18 +25,28 @@ export default function AuthButton() {
     }, []);
 
     const handleLogin = async () => {
+        
+        setLoading(true);
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
             setOpen(false); // close modal after login
         } catch (err) {
             console.error(err);
             alert("Login failed");
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleLogout = async () => {
         await signOut(auth);
     };
+
+
+    const [loading, setLoading] = useState(false);
+
+
 
     return (
             <div>
@@ -89,7 +99,7 @@ export default function AuthButton() {
                                 </span>
                             </div>
 
-                            <button onClick={handleLogin}>Login</button>
+                            <button disabled={loading} onClick={handleLogin}> {loading ? ("Loading...") : ("Login")} </button>
                         </div>
                     </Modal>
                 </>

@@ -1,9 +1,12 @@
 import Modal from "./Modal";
 import { updateDoc, doc, deleteField } from "firebase/firestore";
 import { db } from "../firebase";
+import { useState } from "react";
 
 export default function DeleteTugasModalAgain({ open, onClose, data, onSuccess }: any) {
+    const [loading, setLoading] = useState(false);
     const handleDelete = async () => {
+        setLoading(true);
         if (!data?.id) return;
 
         await updateDoc(doc(db, "schedules", data.id), {
@@ -13,6 +16,7 @@ export default function DeleteTugasModalAgain({ open, onClose, data, onSuccess }
             note1TugasAgain: deleteField(),
             note2TugasAgain: deleteField(),
         });
+        setLoading(false);
 
         onSuccess();
         onClose();
@@ -23,7 +27,7 @@ export default function DeleteTugasModalAgain({ open, onClose, data, onSuccess }
             <h3>Yakin mau hapus tugas?</h3>
             <p>"{data?.h1TugasAgain}"</p>
 
-            <button onClick={handleDelete}>Yes, Delete</button>
+            <button onClick={handleDelete}>{loading ? ("Loading...") : ("Yes, Delete")}</button>
         </Modal>
     );
 }

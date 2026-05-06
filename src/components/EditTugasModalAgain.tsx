@@ -42,7 +42,12 @@ export default function EditTugasModalAgain({
     !titleTugasAgain.trim() ||
     !h1TugasAgain.trim();
 
+  const [loading, setLoading] = useState(false);
+
   const handleUpdate = async () => {
+
+    setLoading(true);
+
     if (isInvalid) {
       setShowInvalid(true);
       return;
@@ -57,6 +62,8 @@ export default function EditTugasModalAgain({
       note1TugasAgain,
       note2TugasAgain,
     });
+    
+    setLoading(false);
 
     onSuccess();
     onClose();
@@ -123,7 +130,7 @@ export default function EditTugasModalAgain({
           cursor: isInvalid ? "not-allowed" : "pointer"
         }}
       >
-        Save
+        {loading ? ("Loading...") : ("Simpan")}
       </button>
     </Modal>
   );

@@ -56,6 +56,13 @@ type Schedule = {
 };
 
 export default function TrplReg24() {
+
+    useEffect(() => {
+        document.title = "Jadwal ADB | TRPL REG 24";
+    }, []);
+
+
+
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
@@ -79,6 +86,40 @@ export default function TrplReg24() {
 
     const days = [1, 2, 3, 4, 5];
     const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+
+
+    // new live
+    const [now, setNow] = useState(new Date());
+
+        useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(new Date());
+        }, 60000); // update tiap 1 menit
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const currentDayIndex = () => {
+    const day = now.getDay();
+        // JS: Sunday=0 ... Saturday=6
+        // your system: Monday=1 ... Friday=5
+
+        if (day === 0 || day === 6) return -1;
+        return day;
+    };
+
+    const currentHour = now.getHours();
+
+
+    const liveMatkul = Schedule.find(s =>
+        s.dayIndex === currentDayIndex() &&
+        Array.isArray(s.slots) &&
+        s.slots.includes(currentHour)
+    );
+
+    // end of live
+
+
 
     // auth
     useEffect(() => {
@@ -178,7 +219,16 @@ export default function TrplReg24() {
                                     return (
                                         <td key={day}>
                                             {s && (
+                                                
                                                 <div className={`jadwal-container add-hover ${s.type}`}>
+
+                                                    {/* LIVE BADGE (ONLY FOR ACTIVE CLASS) */}
+                                                    {liveMatkul && liveMatkul.id === s.id && (
+                                                        <div className="live-jadwal">
+                                                            <div className="circle-blink green-bg"></div><span> Kelas Live | Segera Absen</span>
+                                                        </div>
+                                                    )}
+                                                    
 
                                                     {/* CRUD BUTTONS (UNCHANGED) */}
                                                     {user && editMode && (
@@ -317,6 +367,7 @@ export default function TrplReg24() {
                                                     )}
 
                                                 </div>
+                                                
                                             )}
                                         </td>
                                     );
@@ -338,6 +389,24 @@ export default function TrplReg24() {
 
                     <div className="card-content-header">
                         <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
+
+                        {/* LIVE MATKUL */}
+                        {/* <div style={{ marginTop: 10, padding: 10, border: "1px solid #ccc", borderRadius: 8 }}>
+                            <h3>🟢 Matkul Berlangsung Sekarang</h3>
+
+                            {liveMatkul ? (
+                                <div>
+                                    <h2>{liveMatkul.course}</h2>
+                                    <p>{liveMatkul.room}</p>
+                                    <p style={{ color: "var(--blue-color)" }}>
+                                        {liveMatkul.lecturers.join(", ")}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p>Tidak ada kelas saat ini</p>
+                            )}
+                        </div> */}
+
                     </div>
                     <Dashboard />
 

@@ -100,7 +100,10 @@ export default function EditScheduleModal({
     !lecturers.trim() ||
     slots.length === 0;
 
+  const [loading, setLoading] = useState(false);
+
   const handleUpdate = async () => {
+    setLoading(true);
     if (isInvalid) {
       setShowInvalid(true);
       return;
@@ -120,6 +123,7 @@ export default function EditScheduleModal({
       slots,
       note,
     });
+    setLoading(false);
 
     onSuccess();
     onClose();
@@ -203,7 +207,7 @@ export default function EditScheduleModal({
           cursor: isInvalid ? "not-allowed" : "pointer"
         }}
       >
-        Update
+        {loading ? ("Loading...") : ("Simpan")}
       </button>
     </Modal>
   );

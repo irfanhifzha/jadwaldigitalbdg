@@ -31,13 +31,14 @@
     border-color: var(--border-hover);
 }
 
-.circle-static {
-  width: 10px;
-  height: 10px;
+.circle-blink {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   display: inline-block;
   margin: 3px;
   vertical-align: middle;
+  animation: blink 1.5s infinite ease-in-out;
 }
 
 .circle {
@@ -47,7 +48,6 @@
   display: inline-block;
   margin: 3px;
   vertical-align: middle;
-  background-color: red;
 }
 
 @keyframes blink {
@@ -55,7 +55,7 @@
     opacity: 1;
   }
   25%, 75% {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 
@@ -570,7 +570,7 @@
   height: 100%;
   justify-content: center;
   margin: 0px 0px 10px 0px;
-  
+  padding-top: 00px;
 }
 
 .jadwal-container h1 {
@@ -654,9 +654,31 @@
   color: rgb(109, 109, 109)
 }
 
+/* =========================================================
+   JADWAL IF LIVE CLASS
+   ========================================================= */
 
+.live-jadwal {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0px 0px 5px;
+  padding: 2px 5px;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid var(--green-border);
+  width: fit-content;
+  transition: all 0.2s ease;
+}
 
-
+.live-jadwal span {
+  font-size: 7px;
+  font-weight: 600;
+  margin: 0px 5px 0px 0px;
+  color: var(--green-color);
+  user-select: none;
+}
 
 /* =========================================================
    UI for edit and other
@@ -896,4 +918,9 @@ select {
 .button-jam.selected:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

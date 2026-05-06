@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
     collection,
     getDocs,
@@ -9,7 +9,7 @@ import { db, auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 
-// MODALS (UNCHANGED)
+// MODALS
 import AddScheduleModal from "../components/AddScheduleModal";
 import EditScheduleModal from "../components/EditScheduleModal";
 import DeleteScheduleModal from "../components/DeleteScheduleModal";
@@ -54,13 +54,22 @@ type Schedule = {
 };
 
 export default function DashboardAll() {
+
+    useEffect(() => {
+        document.title = "Jadwal ADB | ALL";
+    }, []);
+
     const [Schedule, setSchedule] = useState<Schedule[]>([]);
     const [user, setUser] = useState<User | null>(null);
 
     const [editMode, setEditMode] = useState(false);
     const [tugasVisibility, setTugasVisibility] = useState(false);
 
-    // modals (UNCHANGED)
+    // ✅ FILTER STATE
+    const [filterProgram, setFilterProgram] = useState<string>("ALL");
+    const [filterSemester, setFilterSemester] = useState<string>("ALL");
+
+    // modals
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -77,6 +86,7 @@ export default function DashboardAll() {
 
     const days = [1, 2, 3, 4, 5];
     const hours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+    
 
     // auth
     useEffect(() => {
@@ -84,7 +94,7 @@ export default function DashboardAll() {
         return () => unsub();
     }, []);
 
-    // FETCH (FIXED)
+    // fetch
     const fetchSchedules = async () => {
         const snap = await getDocs(collection(db, "schedules"));
 
@@ -93,19 +103,33 @@ export default function DashboardAll() {
             ...doc.data()
         })) as Schedule[];
 
-        const allowedPrograms = ["TRPL", "BISDIG", "BISDIGeks"];
-
-        setSchedule(
-            data.filter(d => allowedPrograms.includes(d.program))
-        );
+        setSchedule(data);
     };
 
-    // CALL FETCH (FIXED)
     useEffect(() => {
         fetchSchedules();
     }, []);
 
-    // SESSION LOOKUP (MULTIPLE SUPPORT)
+    // ✅ FILTERED DATA (OPTIMIZED)
+    const filteredSchedule = useMemo(() => {
+        return Schedule.filter(s => {
+            const programMatch =
+                filterProgram === "ALL" || s.program === filterProgram;
+
+            const semesterMatch =
+                filterSemester === "ALL" || s.semester === Number(filterSemester);
+
+            return programMatch && semesterMatch;
+        });
+    }, [Schedule, filterProgram, filterSemester]);
+
+    // auto semester list
+    const semesters = useMemo(
+        () => [...new Set(Schedule.map(s => s.semester))],
+        [Schedule]
+    );
+
+    // session lookup
     const getSessions = (data: Schedule[], dayIndex: number, hour: number) => {
         return data.filter(
             s =>
@@ -119,10 +143,20 @@ export default function DashboardAll() {
         <div className="card-content-body bg-invert bg-border">
             <h2>{title}</h2>
 
-            <div style={{ display: "flex", gap: "5px", marginBottom: 10, animation:"fadeUp 0.5s ease-out"}}>
+            {/* ✅ CONTROLS */}
+            <div style={{
+                display: "flex",
+                gap: "10px",
+                marginBottom: 10,
+                alignItems: "center",
+                flexWrap: "wrap",
+            }}>
+
                 <button onClick={() => setTugasVisibility(prev => !prev)}>
                     {tugasVisibility ? "👀 Hide Tugas" : "🔍 Show Tugas"}
                 </button>
+
+                
 
                 {user && (
                     <>
@@ -135,8 +169,37 @@ export default function DashboardAll() {
                         </button>
                     </>
                 )}
+
+                {/* PROGRAM FILTER */}
+                <select
+                    style={{width:150}}
+                    value={filterProgram}
+                    onChange={(e) => setFilterProgram(e.target.value)}
+                >
+                    <option value="ALL">All Program</option>
+                    <option value="TRPL">TRPL</option>
+                    <option value="BISDIG">BISDIG</option>
+                    <option value="BISDIGeks">BISDIGeks</option>
+                </select>
+
+                {/* SEMESTER FILTER */}
+                <select
+                    style={{width:150}}
+                    value={filterSemester}
+                    onChange={(e) => setFilterSemester(e.target.value)}
+                >
+                    <option value="ALL">All Semester</option>
+                    {semesters.map(s => (
+                        <option key={s} value={s}>
+                            Semester {s}
+                        </option>
+                    ))}
+                </select>
             </div>
 
+            
+
+            {/* TABLE */}
             <div className="jadwal-wrapper">
                 <table className="jadwal-table">
                     <thead>
@@ -160,10 +223,11 @@ export default function DashboardAll() {
 
                                     return (
                                         <td key={day}>
-                                            {sessions.map((s, idx) => (
+                                            {sessions.map((s, idx) => 
+                                            s && (
                                                 <div key={idx} className={`jadwal-container-new add-hover ${s.type}`}>
 
-                                                    {/* CRUD BUTTONS (UNCHANGED) */}
+                                                    {/* CRUD BUTTONS */}
                                                     {user && editMode && (
                                                         <div className="crud-button">
                                                             <button
@@ -216,13 +280,12 @@ export default function DashboardAll() {
                                                         </div>
                                                     )}
 
-                                                    {/* CONTENT (UNCHANGED) */}
-                                                    <h3 style={{marginTop:10, color:"var(--red-color)"}}>
+                                                    <h3 style={{ marginTop: 10, color: "var(--red-color)" }}>
                                                         {s.program} - Sem {s.semester}
                                                     </h3>
                                                     <h1>{s.course}</h1>
                                                     <h2>{s.room}</h2>
-                                                    <h3 style={{color:"var(--blue-color)"}}>
+                                                    <h3 style={{ color: "var(--blue-color)" }}>
                                                         {s.lecturers.join(", ")}
                                                     </h3>
 
@@ -233,7 +296,6 @@ export default function DashboardAll() {
                                                         <>
                                                             {s.titleTugas && (
                                                                 <div className="card-content-body bg-invert-new" style={{display:"block", marginBottom:10}}>
-
                                                                     {user && editMode && (
                                                                         <div className="crud-button">
                                                                             <button
@@ -242,7 +304,9 @@ export default function DashboardAll() {
                                                                                     setOpenTugasEdit(true);
                                                                                 }}
                                                                                 className="crud-button-icon material-symbols-rounded "
-                                                                            >edit</button>
+                                                                            >
+                                                                                edit
+                                                                            </button>
 
                                                                             <button
                                                                                 onClick={() => {
@@ -250,7 +314,9 @@ export default function DashboardAll() {
                                                                                     setOpenTugasDelete(true);
                                                                                 }}
                                                                                 className="crud-button-icon material-symbols-rounded "
-                                                                            >delete</button>
+                                                                            >
+                                                                                delete
+                                                                            </button>
                                                                         </div>
                                                                     )}
 
@@ -265,8 +331,7 @@ export default function DashboardAll() {
                                                             )}
 
                                                             {s.titleTugasAgain && (
-                                                                <div className="card-content-body bg-invert-new" style={{display:"block"}}>
-
+                                                                <div className="card-content-body bg-invert-new" style={{display:"block", marginBottom:10}}>
                                                                     {user && editMode && (
                                                                         <div className="crud-button">
                                                                             <button
@@ -275,7 +340,9 @@ export default function DashboardAll() {
                                                                                     setOpenTugasEditAgain(true);
                                                                                 }}
                                                                                 className="crud-button-icon material-symbols-rounded "
-                                                                            >edit</button>
+                                                                            >
+                                                                                edit
+                                                                            </button>
 
                                                                             <button
                                                                                 onClick={() => {
@@ -283,7 +350,9 @@ export default function DashboardAll() {
                                                                                     setOpenTugasDeleteAgain(true);
                                                                                 }}
                                                                                 className="crud-button-icon material-symbols-rounded "
-                                                                            >delete</button>
+                                                                            >
+                                                                                delete
+                                                                            </button>
                                                                         </div>
                                                                     )}
 
@@ -298,9 +367,11 @@ export default function DashboardAll() {
                                                             )}
                                                         </>
                                                     )}
-
                                                 </div>
-                                            ))}
+                                            )
+                                        )}
+
+
                                         </td>
                                     );
                                 })}
@@ -322,13 +393,15 @@ export default function DashboardAll() {
                     <div className="card-content-header">
                         <h1>Dashboard Jadwal Kuliah ALL</h1>
                     </div>
+
                     <Dashboard />
 
-                    {renderTable(`ALL JADWAL`, Schedule)}
+                    {/* ✅ USE FILTERED DATA */}
+                    {renderTable("JADWAL ALL", filteredSchedule)}
                 </div>
             </div>
 
-            {/* MODALS (UNCHANGED) */}
+            {/* MODALS */}
             <AddScheduleModal open={openAdd} onClose={() => setOpenAdd(false)} onSuccess={fetchSchedules} />
             <EditScheduleModal open={openEdit} onClose={() => setOpenEdit(false)} data={selected} onSuccess={fetchSchedules} />
             <DeleteScheduleModal open={openDelete} onClose={() => setOpenDelete(false)} data={selected} onSuccess={fetchSchedules} />
