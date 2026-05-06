@@ -452,6 +452,16 @@
   overflow-y: hidden;
 }
 
+.calendar-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+      animation: fadeUp 0.5s ease-out;
+  overflow-y: hidden;
+}
+
 /* =========================================================
    TABLE DEFAULT (desktop)
    ========================================================= */
@@ -511,6 +521,81 @@
 }
 
 /* =========================================================
+   TABLE CALENDAR
+   ========================================================= */
+
+.calendar-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  font-size: 14px;
+
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+/* Cells */
+.calendar-table th,
+.calendar-table td {
+  height: 150px;
+  padding: 6px;
+  text-align: center;
+  vertical-align: middle;
+  border: 0.5px solid var(--border);
+  
+}
+
+.calendar-table thead th {
+  height: 18px;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+
+.empty-cell {
+  background-color: rgb(236, 236, 236);
+}
+
+.empty-cell .calendar-container {
+  display: none;
+}
+
+.day-cell {
+  background-color: white;
+}
+
+
+.calendar-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 5px;
+  overflow: show;
+      transition: all 0.2s ease;
+  height: 100%;
+  justify-content: start;
+  margin: 0px 0px 10px 0px;
+  padding-top: 00px;
+}
+
+.tanggal-title {
+  margin: 5px 0px 5px 0px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: normal;
+}
+
+.long-banner {
+  margin: 0px -20px;
+  border-radius: 12px;
+}
+
+
+/* =========================================================
    RESPONSIVE: TABLE SCROLL UNDER 800px
    ========================================================= */
 
@@ -521,6 +606,18 @@
   }
 
   .jadwal-table {
+    min-width: 850px; /* forces scroll instead of squishing */
+  }
+}
+
+
+@media (max-width: 900px) {
+  .calendar-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendar-table {
     min-width: 850px; /* forces scroll instead of squishing */
   }
 }

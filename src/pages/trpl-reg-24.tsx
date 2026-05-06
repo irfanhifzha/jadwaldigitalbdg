@@ -375,10 +375,169 @@ export default function TrplReg24() {
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                </table>       
             </div>
         </div>
     );
+
+
+
+
+    // NEW CALENDAR
+
+    // isi data calendar db
+    type Calendar = {
+        id?: string;
+
+        program: string;
+        semester: number;
+
+        bulan: string;
+        tanggal: number[];
+
+        task: string;
+    }
+
+    // fetch data from firestore
+    const [calendar, setCalendar] = useState<Calendar[]>([]);
+
+    const fetchCalendar = async () => {
+        const snap_calendar = await getDocs(collection(db, "calendar"));
+
+        const data_calendar = snap_calendar.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        })) as Calendar[];
+
+        setCalendar(
+            data_calendar.filter(d => d.program === "TRPL" && d.semester === semester)
+        );
+    }
+
+    useEffect(() => {
+    if (semester !== null) {
+        fetchCalendar();
+    }
+    }, [semester]);
+
+    // SESSION LOOKUP (SIMPLE, NO RESTRICTION)
+    const getCalendar = (data: Calendar[], bulan: string, tgl: number) => {
+        return data.find(
+            s =>
+                s.bulan === bulan &&
+                Array.isArray(s.tanggal) &&
+                s.tanggal.includes(tgl)
+        ) || null;
+    };
+
+    // data react calendar
+    const buildCalendar = (year: number, month: number) => {
+    const firstDay = new Date(year, month, 1).getDay(); // 0 (Sun) - 6 (Sat)
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const weeks = [];
+    let week = new Array(7).fill(null);
+
+    let day = 1;
+
+    // fill first week offset
+    for (let i = firstDay; i < 7; i++) {
+        week[i] = day++;
+    }
+    weeks.push(week);
+
+    // fill remaining weeks
+    while (day <= daysInMonth) {
+            week = new Array(7).fill(null);
+
+            for (let i = 0; i < 7 && day <= daysInMonth; i++) {
+                week[i] = day++;
+            }
+
+            weeks.push(week);
+        }
+
+        return weeks;
+    };
+
+    const renderCalendar = () => {
+        const [currentDate, setCurrentDate] = useState(new Date());
+
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const weeks = buildCalendar(year, month);
+
+        const daysHeader = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+        return (
+            <div className="card-content-body bg-invert bg-border">
+                <h2>
+                    {currentDate.toLocaleString("default", { month: "long" })} {year}
+                </h2>
+
+                <div style={{ display: "flex", gap: "5px", marginBottom: 10, animation:"fadeUp 0.5s ease-out"}}>
+                    <button
+                        onClick={() =>
+                            setCurrentDate(new Date(year, month - 1, 1))
+                        }
+                    >
+                        Prev
+                    </button>
+
+                    <button
+                        onClick={() =>
+                            setCurrentDate(new Date(year, month + 1, 1))
+                        }
+                    >
+                        Next
+                    </button>
+
+                    <button onClick={() => setCurrentDate(new Date())}>
+                        Today
+                    </button>
+
+                </div>
+
+
+                <div className="calendar-wrapper">
+                    <table className="calendar-table">
+                        <thead>
+                            <tr>
+                                {daysHeader.map((day) => (
+                                    <th key={day}>{day}</th>
+                                ))}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {weeks.map((week, i) => (
+                                <tr key={i}>
+                                    {week.map((day, j) => (
+                                        <td key={j} className={day ? "day-cell" : "empty-cell"}>
+                                            <div className="calendar-container">
+                                                
+
+                                                    <div className="tanggal-title">{day || ""}</div>
+                                                    <div className="long-banner blue-bg">test</div>
+                                                    <div className="long-banner red-bg">test</div>
+                                                    <div className="calendar-container add-hover praktek">asdf</div>
+                                            </div>
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    };
+
+
+
+
+
 
     return (
         <>
@@ -389,28 +548,12 @@ export default function TrplReg24() {
 
                     <div className="card-content-header">
                         <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
-
-                        {/* LIVE MATKUL */}
-                        {/* <div style={{ marginTop: 10, padding: 10, border: "1px solid #ccc", borderRadius: 8 }}>
-                            <h3>🟢 Matkul Berlangsung Sekarang</h3>
-
-                            {liveMatkul ? (
-                                <div>
-                                    <h2>{liveMatkul.course}</h2>
-                                    <p>{liveMatkul.room}</p>
-                                    <p style={{ color: "var(--blue-color)" }}>
-                                        {liveMatkul.lecturers.join(", ")}
-                                    </p>
-                                </div>
-                            ) : (
-                                <p>Tidak ada kelas saat ini</p>
-                            )}
-                        </div> */}
-
                     </div>
                     <Dashboard />
 
                     {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
+
+                    {renderCalendar()}
                 </div>
             </div>
 

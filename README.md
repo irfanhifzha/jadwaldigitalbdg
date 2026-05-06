@@ -27,15 +27,11 @@ quality life update, nilai tambahan kalau bisa:
 =======
 
 DONE TODO versi ini:
-- dynamic title web
-- filtering in jadwal all
-- live now 
-- react submit button to loading 3sec after, terus biasa lagi
-- ...
-- nanti versi selanjutnya ganti lagi todo
+- buat kalender each kelas (dibawah jadwal)
+- buat new collection + crud button for kalendar
+- 
 
 TODO:
-- buat kalender each kelas (dibawah jadwal)
 - input dan form css rapihin
 - ...
 
