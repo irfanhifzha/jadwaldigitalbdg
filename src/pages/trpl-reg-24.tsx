@@ -391,13 +391,14 @@ export default function TrplReg24() {
         program: string;
         semester: number;
 
-        tahun: string;
+        tahun: number;
 
         bulan: number;
         tanggal: number[];
 
         task: string;
         type: string;
+        content: string;
     };
 
     // firestore calendar data
@@ -593,7 +594,7 @@ export default function TrplReg24() {
                                         day !== null
                                             ? getCalendar(
                                                 calendar,
-                                                month,
+                                                month +1,
                                                 day
                                             )
                                             : null;
@@ -617,10 +618,32 @@ export default function TrplReg24() {
 
                                                 {/* TASK */}
                                                 {c && (
-                                                    <div className={`long-banner ${c.type}`}>
-                                                        {c.task}
+                                                <>
+                                                    <div className="long-task">
+
+                                                        {/* show task only on first tanggal */}
+                                                        {c.tanggal[0] === day ? (
+                                                        <>
+                                                            <div className="long-task-title">
+                                                                {c.task}
+                                                            </div>
+                                                        </>
+                                                        ) : (
+                                                            <div className="long-task-title hide">
+                                                                {c.task}
+                                                            </div>
+                                                        )
+                                                        }
+
+                                                        {/* show banner for all tanggal */}
+                                                        <div className={`long-banner ${c.type}`}></div>
                                                     </div>
+                                                    {c.content && c.tanggal[0] === day && (
+                                                        <div className="calendar-container add-hover praktek">{c.content}</div>
+                                                    )}
+                                                </>
                                                 )}
+
 
                                             </div>
 

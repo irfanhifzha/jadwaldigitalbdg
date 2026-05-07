@@ -385,24 +385,34 @@ export default function TrplReg24() {
 
     // NEW CALENDAR
 
-    // isi data calendar db
     type Calendar = {
         id?: string;
 
         program: string;
         semester: number;
 
-        bulan: string;
+        tahun: number;
+
+        bulan: number;
         tanggal: number[];
 
         task: string;
-    }
+        type: string;
+        model: string;
+    };
 
-    // fetch data from firestore
+    // firestore calendar data
     const [calendar, setCalendar] = useState<Calendar[]>([]);
 
+    // current displayed month
+    const [currentDate, setCurrentDate] = useState(new Date());
+
+    // FETCH FIRESTORE
     const fetchCalendar = async () => {
-        const snap_calendar = await getDocs(collection(db, "calendar"));
+
+        const snap_calendar = await getDocs(
+            collection(db, "calendar")
+        );
 
         const data_calendar = snap_calendar.docs.map(doc => ({
             id: doc.id,
@@ -410,18 +420,25 @@ export default function TrplReg24() {
         })) as Calendar[];
 
         setCalendar(
-            data_calendar.filter(d => d.program === "TRPL" && d.semester === semester)
+            data_calendar.filter(
+                d =>
+                    d.program === "TRPL" &&
+                    d.semester === semester
+            )
         );
-    }
+    };
 
     useEffect(() => {
-    if (semester !== null) {
         fetchCalendar();
-    }
     }, [semester]);
 
-    // SESSION LOOKUP (SIMPLE, NO RESTRICTION)
-    const getCalendar = (data: Calendar[], bulan: string, tgl: number) => {
+    // FIND EVENT FOR SPECIFIC DATE
+    const getCalendar = (
+        data: Calendar[],
+        bulan: number,
+        tgl: number
+    ) => {
+
         return data.find(
             s =>
                 s.bulan === bulan &&
@@ -430,27 +447,48 @@ export default function TrplReg24() {
         ) || null;
     };
 
-    // data react calendar
-    const buildCalendar = (year: number, month: number) => {
-    const firstDay = new Date(year, month, 1).getDay(); // 0 (Sun) - 6 (Sat)
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // BUILD CALENDAR MATRIX
+    const buildCalendar = (
+        year: number,
+        month: number
+    ): (number | null)[][] => {
 
-    const weeks = [];
-    let week = new Array(7).fill(null);
+        const firstDay = new Date(
+            year,
+            month,
+            1
+        ).getDay();
 
-    let day = 1;
+        const daysInMonth = new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
 
-    // fill first week offset
-    for (let i = firstDay; i < 7; i++) {
-        week[i] = day++;
-    }
-    weeks.push(week);
+        const weeks: (number | null)[][] = [];
 
-    // fill remaining weeks
-    while (day <= daysInMonth) {
+        let week: (number | null)[] =
+            new Array(7).fill(null);
+
+        let day = 1;
+
+        // first week
+        for (let i = firstDay; i < 7; i++) {
+            week[i] = day++;
+        }
+
+        weeks.push(week);
+
+        // remaining weeks
+        while (day <= daysInMonth) {
+
             week = new Array(7).fill(null);
 
-            for (let i = 0; i < 7 && day <= daysInMonth; i++) {
+            for (
+                let i = 0;
+                i < 7 && day <= daysInMonth;
+                i++
+            ) {
                 week[i] = day++;
             }
 
@@ -460,78 +498,169 @@ export default function TrplReg24() {
         return weeks;
     };
 
+    // CURRENT YEAR + MONTH
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    const weeks = buildCalendar(year, month);
+
+    const daysHeader = [
+        "Min",
+        "Sen",
+        "Sel",
+        "Rab",
+        "Kam",
+        "Jum",
+        "Sab"
+    ];
+
     const renderCalendar = () => {
-        const [currentDate, setCurrentDate] = useState(new Date());
-
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-
-        const weeks = buildCalendar(year, month);
-
-        const daysHeader = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
-
         return (
-            <div className="card-content-body bg-invert bg-border">
-                <h2>
-                    {currentDate.toLocaleString("default", { month: "long" })} {year}
-                </h2>
+        <div className="card-content-body bg-invert bg-border">
 
-                <div style={{ display: "flex", gap: "5px", marginBottom: 10, animation:"fadeUp 0.5s ease-out"}}>
-                    <button
-                        onClick={() =>
-                            setCurrentDate(new Date(year, month - 1, 1))
-                        }
-                    >
-                        Prev
-                    </button>
+            {/* TITLE */}
+            <h2>
+                {
+                    currentDate.toLocaleString(
+                        "default",
+                        { month: "long" }
+                    )
+                } {year}
+            </h2>
 
-                    <button
-                        onClick={() =>
-                            setCurrentDate(new Date(year, month + 1, 1))
-                        }
-                    >
-                        Next
-                    </button>
+            {/* BUTTONS */}
+            <div
+                style={{
+                    display: "flex",
+                    gap: "5px",
+                    marginBottom: 10
+                }}
+            >
 
-                    <button onClick={() => setCurrentDate(new Date())}>
-                        Today
-                    </button>
+                <button
+                    onClick={() =>
+                        setCurrentDate(
+                            new Date(year, month - 1, 1)
+                        )
+                    }
+                >
+                    Prev
+                </button>
 
-                </div>
+                <button
+                    onClick={() =>
+                        setCurrentDate(
+                            new Date(year, month + 1, 1)
+                        )
+                    }
+                >
+                    Next
+                </button>
 
+                <button
+                    onClick={() =>
+                        setCurrentDate(new Date())
+                    }
+                >
+                    Today
+                </button>
 
-                <div className="calendar-wrapper">
-                    <table className="calendar-table">
-                        <thead>
-                            <tr>
-                                {daysHeader.map((day) => (
-                                    <th key={day}>{day}</th>
-                                ))}
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {weeks.map((week, i) => (
-                                <tr key={i}>
-                                    {week.map((day, j) => (
-                                        <td key={j} className={day ? "day-cell" : "empty-cell"}>
-                                            <div className="calendar-container">
-                                                
-
-                                                    <div className="tanggal-title">{day || ""}</div>
-                                                    <div className="long-banner blue-bg">test</div>
-                                                    <div className="long-banner red-bg">test</div>
-                                                    <div className="calendar-container add-hover praktek">asdf</div>
-                                            </div>
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        );
+
+            {/* CALENDAR */}
+            <div className="calendar-wrapper">
+
+                <table className="calendar-table">
+
+                    <thead>
+                        <tr>
+                            {daysHeader.map(day => (
+                                <th key={day}>
+                                    {day}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {weeks.map((week, i) => (
+
+                            <tr key={i}>
+
+                                {week.map((day, j) => {
+
+                                    const c =
+                                        day !== null
+                                            ? getCalendar(
+                                                calendar,
+                                                month +1,
+                                                day
+                                            )
+                                            : null;
+
+                                    return (
+                                        <td
+                                            key={j}
+                                            className={
+                                                day !== null
+                                                    ? "day-cell"
+                                                    : "empty-cell"
+                                            }
+                                        >
+
+                                            <div className="calendar-container">
+
+                                                {/* DATE */}
+                                                <div className="tanggal-title">
+                                                    {day ?? ""}
+                                                </div>
+
+                                                {/* TASK */}
+                                                {c && c.model === "long" && (
+                                                    <div className="long-task">
+
+                                                        {/* show task only on first tanggal */}
+                                                        {c.tanggal[0] === day ? (
+                                                        <>
+                                                            <div className="long-task-title">
+                                                                {c.task}
+                                                            </div>
+                                                        </>
+                                                        ) : (
+                                                            <div className="long-task-title hide">
+                                                                {c.task}
+                                                            </div>
+                                                        )
+                                                        }
+
+                                                        {/* show banner for all tanggal */}
+                                                        <div className={`long-banner ${c.type}`}></div>
+                                                    </div>
+                                                )}
+
+                                                {c && c.model === "short" && (
+                                                    <div className="calendar-container add-hover praktek">asdf</div>
+                                                )}
+
+                                            </div>
+
+                                        </td>
+                                    );
+                                })}
+
+                            </tr>
+
+                        ))}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    );
     };
 
 
