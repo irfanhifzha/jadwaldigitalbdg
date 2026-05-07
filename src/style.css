@@ -539,7 +539,7 @@
 /* Cells */
 .calendar-table th,
 .calendar-table td {
-  height: 150px;
+  height: 148px;
   padding: 6px;
   text-align: center;
   vertical-align: middle;
@@ -592,6 +592,9 @@
 .long-banner {
   margin: 0px -20px;
   border-radius: 12px;
+  color: white;
+  width: 500;
+  
 }
 
 
