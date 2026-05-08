@@ -573,7 +573,6 @@
   flex-direction: column;
   gap: 5px;
   border-radius: 5px;
-  overflow: show;
       transition: all 0.2s ease;
   height: 100%;
   justify-content: start;
@@ -588,6 +587,31 @@
   font-size: 0.7rem;
   text-align: center;
   line-height: normal;
+  justify-content: center;
+  position: relative;
+}
+
+.tanggal-title.live {
+  position: relative;
+  z-index: 5;
+  color: var(--blue-color);
+  background-color: var(--blue-bg);
+  padding: 5px 8px;
+  margin: 0;
+  border-radius: 20px;
+  border: 1px solid var(--blue-border);
+}
+
+.tanggal-live {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--blue-bg);
+  width: 23px;
+  height: 23px;
+  border-radius: 15px;
+  z-index: 3;
 }
 
 
@@ -596,22 +620,50 @@
   flex-direction: column;
   margin: 0 -10px 0 -10px;
   position: relative;
+  transition: all 0.3s ease;
+  z-index: 1;
+  position: relative;
+  display: block;
+}
+
+.short-task {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 0 0;
+  position: relative;
+  justify-content: center;
+}
+
+.short-task-title {
+  color: var(--black);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 5px;
+  line-height: normal;
 }
 
 .long-task-title {
-  z-index: 2;
+  z-index: 5;
   color: white;
   font-size: 0.7rem;
   font-weight: 500;
   text-align: start;
-  margin: 0 0 0 20px;
+  margin: 0 20px 0 15px;
+  white-space: nowrap;
+   position: relative;
+   overflow: auto;
+  align-items: center;
+   transform: translateY(-6px);
 }
 
 .long-task-title.hide {
   opacity: 0%;
+  font-size: 0px;
   user-select: none;
   margin: 0 0 0 20px;
 }
+
 
 .long-banner {
   width: 100%;
@@ -621,6 +673,23 @@
   left: 0;
   border-radius: 5px;
   color: white;
+}
+
+.short-banner {
+  width: 15px;
+  height: 15px;
+  border-radius: 55px;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.short-banner-selectable {
+  width: 15px;
+  height: 15px;
+  border-radius: 55px;
+  color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 
@@ -826,6 +895,7 @@
     direction: rtl;
 
     max-height: 84px;
+    cursor: pointer;
 }
 
 .crud-button button.crud-button-icon {
@@ -1049,4 +1119,46 @@ select {
 .loading {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+
+
+
+
+
+
+/* // newest for button calendar */
+
+/* =========================================================
+   VISIBILITY BUTTON (NEW)
+   ========================================================= */
+
+.task-visibility-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 12px;
+  height: 12px;
+
+  margin-right: 6px;
+
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.25);
+
+  background: rgba(255,255,255,0.15);
+  color: white;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+
+  transition: all 0.2s ease;
+  transform: translateY(2px);
+}
+
+.task-visibility-btn:hover {
+  transform: scale(1.08);
+  background: rgba(255,255,255,0.25);
 }

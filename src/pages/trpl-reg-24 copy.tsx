@@ -398,7 +398,7 @@ export default function TrplReg24() {
 
         task: string;
         type: string;
-        model: string;
+        content: string;
     };
 
     // firestore calendar data
@@ -617,7 +617,8 @@ export default function TrplReg24() {
                                                 </div>
 
                                                 {/* TASK */}
-                                                {c && c.model === "long" && (
+                                                {c && (
+                                                <>
                                                     <div className="long-task">
 
                                                         {/* show task only on first tanggal */}
@@ -637,11 +638,12 @@ export default function TrplReg24() {
                                                         {/* show banner for all tanggal */}
                                                         <div className={`long-banner ${c.type}`}></div>
                                                     </div>
+                                                    {c.content && c.tanggal[0] === day && (
+                                                        <div className="calendar-container add-hover praktek">{c.content}</div>
+                                                    )}
+                                                </>
                                                 )}
 
-                                                {c && c.model === "short" && (
-                                                    <div className="calendar-container add-hover praktek">asdf</div>
-                                                )}
 
                                             </div>
 

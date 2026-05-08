@@ -25,6 +25,14 @@ import EditTugasModalAgain from "../components/EditTugasModalAgain";
 import DeleteTugasModalAgain from "../components/DeleteTugasModalAgain";
 import Dashboard from "../components/Dashboard";
 
+// MODALS UNTUK CALENDAR
+import AddRencanaModal from "../components/AddRencanaModal";
+// import DeleteRencanaModal from "../components/DeleteRencanaModal";
+import ViewRencanaModal from "../components/ViewRencanaModal";
+
+
+import fotokurikulum from "../assets/kurikulumTRPL.png"
+
 type Schedule = {
     id?: string;
 
@@ -437,14 +445,14 @@ export default function TrplReg24() {
         data: Calendar[],
         bulan: number,
         tgl: number
-    ) => {
+    ): Calendar[] => {
 
-        return data.find(
+        return data.filter(
             s =>
                 s.bulan === bulan &&
                 Array.isArray(s.tanggal) &&
                 s.tanggal.includes(tgl)
-        ) || null;
+        );
     };
 
     // BUILD CALENDAR MATRIX
@@ -514,6 +522,18 @@ export default function TrplReg24() {
         "Sab"
     ];
 
+    
+
+    // new const for button crud
+
+    const [selected_cal, setSelected_cal] = useState<Calendar | null>(null);
+
+    const [openAddRencana, setOpenAddRencana] = useState(false);
+    // const [openDeleteRencana, setOpenDeleteRencana] = useState(false);
+    const [openViewRencana, setOpenViewRencana] = useState(false);
+
+    
+
     const renderCalendar = () => {
         return (
         <div className="card-content-body bg-invert bg-border">
@@ -540,7 +560,11 @@ export default function TrplReg24() {
                 <button
                     onClick={() =>
                         setCurrentDate(
-                            new Date(year, month - 1, 1)
+                            new Date(
+                                year,
+                                month - 1,
+                                1
+                            )
                         )
                     }
                 >
@@ -550,7 +574,11 @@ export default function TrplReg24() {
                 <button
                     onClick={() =>
                         setCurrentDate(
-                            new Date(year, month + 1, 1)
+                            new Date(
+                                year,
+                                month + 1,
+                                1
+                            )
                         )
                     }
                 >
@@ -559,11 +587,21 @@ export default function TrplReg24() {
 
                 <button
                     onClick={() =>
-                        setCurrentDate(new Date())
+                        setCurrentDate(
+                            new Date()
+                        )
                     }
                 >
                     Today
                 </button>
+
+                {user && (
+                    <>
+                        <button onClick={() => setOpenAddRencana(true)}>
+                            + Tambah Rencana
+                        </button>
+                    </>
+                )}
 
             </div>
 
@@ -590,16 +628,21 @@ export default function TrplReg24() {
 
                                 {week.map((day, j) => {
 
-                                    const c =
+                                    const events: Calendar[] =
                                         day !== null
                                             ? getCalendar(
                                                 calendar,
-                                                month +1,
+                                                month + 1,
                                                 day
                                             )
-                                            : null;
+                                            : [];
+
+                                    const isToday = day === new Date().getDate() &&
+                                        month === new Date().getMonth() &&
+                                        year === new Date().getFullYear();
 
                                     return (
+
                                         <td
                                             key={j}
                                             className={
@@ -613,37 +656,100 @@ export default function TrplReg24() {
 
                                                 {/* DATE */}
                                                 <div className="tanggal-title">
-                                                    {day ?? ""}
+                                                    {day ? (
+                                                        <div style={{display:"flex", width:"100%",justifyContent:"center"}}>
+                                                            <div className={`tanggal-title ${isToday ? "live " : ""}`}>
+                                                            {day}
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
                                                 </div>
 
-                                                {/* TASK */}
-                                                {c && (
-                                                <>
-                                                    <div className="long-task">
+                                                {/* TASKS */}
+                                                {events.map((item, idx) => (
+                                                    item.tanggal.length === 1 ? (
 
-                                                        {/* show task only on first tanggal */}
-                                                        {c.tanggal[0] === day ? (
-                                                        <>
-                                                            <div className="long-task-title">
-                                                                {c.task}
+                                                        /* SHORT TASK */
+                                                        <div
+                                                            key={idx}
+                                                            className="short-task"
+                                                        >
+                                                            <div style={{display:"flex", width:"100%",justifyContent:"center"}}>
+                                                            {user ? ( 
+                                                                <div onClick={() => {
+                                                                                    setSelected_cal(item);
+                                                                                    setOpenViewRencana(true);
+                                                                                }}
+                                                                className={`short-banner-selectable add-hover ${item.type}`}></div>
+                                                             ) : (
+                                                                // <div className={`short-banner ${item.type}`}></div>
+                                                                <div onClick={() => {
+                                                                                    setSelected_cal(item);
+                                                                                    setOpenViewRencana(true);
+                                                                                }}
+                                                                className={`short-banner-selectable add-hover ${item.type}`}></div>
+                                                            )}
                                                             </div>
-                                                        </>
-                                                        ) : (
-                                                            <div className="long-task-title hide">
-                                                                {c.task}
+
+                                                            <div className="short-task-title">
+                                                                {item.task}
                                                             </div>
-                                                        )
-                                                        }
+                                                        </div>
 
-                                                        {/* show banner for all tanggal */}
-                                                        <div className={`long-banner ${c.type}`}></div>
-                                                    </div>
-                                                    {c.content && c.tanggal[0] === day && (
-                                                        <div className="calendar-container add-hover praktek">{c.content}</div>
-                                                    )}
-                                                </>
-                                                )}
+                                                    ) : (
 
+                                                        /* LONG TASK */
+                                                        <div
+                                                            key={idx}
+                                                            className="long-task add-hover"
+                                                        >
+
+                                                            {/* SHOW TASK ONLY ON FIRST tanggal */}
+                                                            {item.tanggal[0] === day ? (
+                                                                <>
+
+                                                               
+                                                                    
+                                                                <div className="long-task-title">
+
+                                                                     <button
+                                                                        onClick={() => {
+                                                                               setSelected_cal(item);
+                                                                                setOpenViewRencana(true);
+                                                                            }}
+                                                                        className="task-visibility-btn material-symbols-rounded ">
+                                                                            visibility
+                                                                    </button>
+
+
+                                                                    {item.task}
+                                                                </div>
+                                                                                                                                
+                                                                </>
+
+                                                            ) : (
+
+                                                                <div className="long-task-title hide">
+                                                                    {item.task}
+                                                                </div>
+
+                                                            )}
+                                                            
+
+                                                            {/* SHOW BANNER */}
+                                                            <div
+                                                                className={`long-banner ${item.type}`}
+                                                            ></div>
+
+                                                          
+                                                                   
+                                                                   
+
+                                                        </div>
+
+                                                    )
+
+                                                ))}
 
                                             </div>
 
@@ -652,7 +758,6 @@ export default function TrplReg24() {
                                 })}
 
                             </tr>
-
                         ))}
 
                     </tbody>
@@ -681,10 +786,16 @@ export default function TrplReg24() {
                         <h1>Dashboard Jadwal Kuliah - TRPL REG 24</h1>
                     </div>
                     <Dashboard />
+                   
 
                     {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
 
                     {renderCalendar()}
+                     <img
+                        src={fotokurikulum}
+                        alt="Kurikulum TRPL"
+                        style={{ height: "300px", width:"auto", objectFit: "contain"}}
+                    />
                 </div>
             </div>
 
@@ -700,6 +811,15 @@ export default function TrplReg24() {
             <AddTugasModalAgain open={openTugasAddAgain} data={selected} onClose={() => setOpenTugasAddAgain(false)} onSuccess={fetchSchedules} />
             <EditTugasModalAgain open={openTugasEditAgain} data={selected} onClose={() => setOpenTugasEditAgain(false)} onSuccess={fetchSchedules} />
             <DeleteTugasModalAgain open={openTugasDeleteAgain} data={selected} onClose={() => setOpenTugasDeleteAgain(false)} onSuccess={fetchSchedules} />
+
+
+            {/* MODAL UNTUK CALENDAR RENCANA */}
+            <AddRencanaModal open={openAddRencana} onClose={() => setOpenAddRencana(false)} onSuccess={fetchCalendar} />
+            {/* <DeleteRencanaModal open={openDeleteRencana} data={selected_cal} onClose={() => setOpenDeleteRencana(false)} onSuccess={fetchCalendar} /> */}
+            <ViewRencanaModal open={openViewRencana} data={selected_cal} onClose={() => setOpenViewRencana(false)} onSuccess={fetchCalendar} />
+
+
+
         </>
     );
 }
