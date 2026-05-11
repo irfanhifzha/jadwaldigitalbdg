@@ -27,12 +27,19 @@ quality life update, nilai tambahan kalau bisa:
 =======
 
 DONE TODO versi ini:
-- buat kalender each kelas (dibawah jadwal)
-- buat new collection + crud button for kalendar
-- 
+- dynamic title web
+- filtering in jadwal all
+- live now 
+- react submit button to loading 3sec after, terus biasa lagi
+- ...
+- kurikulum
+- kalender crud
 
 TODO:
+- buat kalender each kelas (dibawah jadwal), tinggal sisanya bisdig and other..
 - input dan form css rapihin
+- buat SS or form to shareable text div, copy image or text to clipboard utk share
 - ...
+- task older cal auto delete?
 
 =======
