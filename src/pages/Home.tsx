@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -11,6 +11,22 @@ function Home() {
 
     const navigate = useNavigate();
 
+      // offline mode firestore
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+    useEffect(() => {
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+        };
+    }, []);
+
   return (
     <>
       <div style={{display: "flex", flexDirection:"column", height:"100vh", alignItems:"center", justifyContent:"center"}}>
@@ -22,6 +38,22 @@ function Home() {
 
             <div className="card-content-body bg-invert bg-border center"  style={{maxHeight:400, overflowY:"scroll"}}>
                 <h2>Dashboard Jadwal Kuliah</h2>
+
+                {!isOnline && (
+                            <div
+                            style={{
+                                fontSize: "10px",
+                                color: "#ef4444",
+                                border: "1px solid #6b7280",
+                                borderRadius: "16px",
+                                padding: "8px",
+                                marginTop: "8px",
+                            }}
+                            >
+                                You're offline — showing cached data
+                            </div>
+                )}
+
                 <div style={{display:"flex", flexDirection:"column", gap:2, width:"100%", marginBottom:20}} className="center">
                     <button className="card-menu bg-hover-b" onClick={() => navigate("/trpl-reg-24")}>
                         <span className="material-symbols-rounded bg-border white-color">function</span>
