@@ -1,9 +1,7 @@
 
-import { useNavigate } from "react-router-dom";
 import AuthButton from "./AuthButton";
 
 export default function Navbar() {
-  const navigate = useNavigate();
 
   return (
     <>
@@ -17,10 +15,10 @@ export default function Navbar() {
           gap: "10px",
         }}
       >
-        <button className="card-menu bg-hover-p" style={{margin: '5px 0 15px 0'}} onClick={() => navigate("/")}>
+        <a className="card-menu bg-hover-p" style={{margin: '5px 0 15px 0'}} href="/">
               <span className="material-symbols-rounded bg-border white-color">Home</span>
               <h1>Back to Home</h1>
-          </button>
+        </a>
 
         <AuthButton/>
 

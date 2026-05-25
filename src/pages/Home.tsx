@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
 
@@ -9,7 +8,6 @@ function Home() {
             document.title = "Jadwal Akademi Digital Bandung";
     }, []);
 
-    const navigate = useNavigate();
 
       // offline mode firestore
     const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -55,48 +53,48 @@ function Home() {
                 )}
 
                 <div style={{display:"flex", flexDirection:"column", gap:2, width:"100%", marginBottom:20}} className="center">
-                    <button className="card-menu bg-hover-b" onClick={() => navigate("/trpl-reg-24")}>
+                    <a className="card-menu bg-hover-b" href="/trpl-reg-24">
                         <span className="material-symbols-rounded bg-border white-color">function</span>
                         <h1>Jadwal TRPL REG 24</h1>
-                    </button>
+                    </a>
 
-                    <button className="card-menu bg-hover-g" onClick={() => navigate("/bisdig-reg-24")}>
+                    <a className="card-menu bg-hover-g" href="/bisdig-reg-24">
                         <span className="material-symbols-rounded bg-border white-color">analytics</span>
                         <h1>Jadwal BISDIG REG 24</h1>
-                    </button>
+                    </a>
 
 
-                    <button className="card-menu bg-hover-p" onClick={() => navigate("/trpl-reg-25")}>
+                    <a className="card-menu bg-hover-p" href="/trpl-reg-25">
                         <span className="material-symbols-rounded bg-border white-color">cards_stack</span>
                         <h1>Jadwal TRPL REG 25</h1>
-                    </button>
+                    </a>
 
-                    <button className="card-menu bg-hover-o" onClick={() => navigate("/bisdig-reg-25")}>
+                    <a className="card-menu bg-hover-o" href="/bisdig-reg-25">
                         <span className="material-symbols-rounded bg-border white-color">business_center</span>
                         <h1>Jadwal BISDIG REG 25</h1>
-                    </button>
+                    </a>
 
 
                     <div>----</div>
         
 
-                    <button className="card-menu bg-hover-b" onClick={() => navigate("/bisdig-eks-24")}>
+                    <a className="card-menu bg-hover-b" href="/bisdig-eks-24">
                         <span className="material-symbols-rounded bg-border white-color">chart_data</span>
                         <h1>Jadwal BISDIG EKS 24</h1>
-                    </button>
+                    </a>
 
-                    <button className="card-menu bg-hover-p" onClick={() => navigate("/bisdig-eks-25")}>
+                    <a className="card-menu bg-hover-p" href="/bisdig-eks-25">
                         <span className="material-symbols-rounded bg-border white-color">domain</span>
                         <h1>Jadwal BISDIG EKS 25</h1>
-                    </button>
+                    </a>
 
                     <div>----</div>
         
 
-                    <button className="card-menu bg-hover-r" onClick={() => navigate("/dashboard-all")}>
+                    <a className="card-menu bg-hover-r" href="/dashboard-all">
                         <span className="material-symbols-rounded bg-border white-color">experiment</span>
                         <h1>Jadwal ALL (Eksperimental)</h1>
-                    </button>
+                    </a>
 
 
                 </div>

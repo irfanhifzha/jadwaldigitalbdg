@@ -140,3 +140,9 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+
+a {
+  text-decoration: none;
+  margin-top: 15px
+}
