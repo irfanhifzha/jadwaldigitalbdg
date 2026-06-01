@@ -73,6 +73,8 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
     setProgram("");
     setSemester(0);
     setTanggal([]);
+    setBulan(today.getMonth());
+    setTahun(today.getFullYear());
     setType("");
     setTask("");
     setContent("");
@@ -128,6 +130,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
     <Modal open={open} onClose={handleClose}>
       <h2>Tambah Rencana</h2>
 
+      <label>Program</label>
       {/* PROGRAM */}
       <select value={program} onChange={(e) => setProgram(e.target.value)}>
         <option value="" disabled>Pilih Program Studi</option>
@@ -136,6 +139,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         <option value="BISDIGeks">BISDIG-Eksekutif</option>
       </select>
 
+      <label>Semester</label>
       {/* SEMESTER */}
       <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>
         <option value={0} disabled>Pilih Semester</option>
@@ -144,6 +148,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         ))}
       </select>
 
+      <label>Bulan</label>
       {/* BULAN */}
       <select value={bulan} onChange={(e) => setBulan(Number(e.target.value))}>
         <option value={0} disabled>Pilih Bulan</option>
@@ -154,6 +159,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         ))}
       </select>
 
+      <label>Tahun</label>
       {/* TAHUN */}
       <input
         type="number"
@@ -165,7 +171,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
       {/* TANGGAL */}
       <div style={{ marginTop: 10 }}>
         <label>Tanggal</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10, }}>
           {availableDates.map((day) => {
             const isSelected = tanggal.includes(day);
 
@@ -173,12 +179,11 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
               <div
                 key={day}
                 onClick={() => toggleDate(day)}
-                className="button-tgl"
+                className={`button-jam
+                  ${isSelected ? "selected enabled" : "enabled"}`}
                 style={{
-                  padding: "6px 10px",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                  background: isSelected ? "#4f46e5" : "#e5e7eb",
+                  borderColor: isSelected ? "#362dde" : "",
+                  background: isSelected ? "#4f46e5" : "",
                   color: isSelected ? "#fff" : "#000",
                 }}
               >
@@ -190,8 +195,10 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
       </div>
 
 
+
+      <label>Tipe</label>
       {/* TYPE */}
-      <select style={{marginTop:20}}
+      <select
       value={type} onChange={(e) => setType(e.target.value)}>
         <option value="" disabled>Pilih Tipe</option>
         <option value="orange-bg">Oranye</option>
@@ -201,6 +208,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         <option value="green-bg">Hijau</option>
       </select>
 
+      <label>Title</label>
       {/* TASK */}
       <input
         placeholder="Title rencana..."
@@ -208,6 +216,7 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         onChange={(e) => setTask(e.target.value)}
       />
 
+      <label>Deskripsi</label>
       {/* CONTENT */}
       <input
         placeholder="Deskripsi rencana..."
@@ -215,14 +224,15 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
         onChange={(e) => setContent(e.target.value)}
       />
 
+
       {/* BUTTON */}
       <button
         onClick={handleSubmit}
         disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer",
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer",
         }}
       >
         {loading ? "Loading..." : "Simpan"}

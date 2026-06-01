@@ -71,6 +71,7 @@ export default function EditTugasModal({
     <Modal open={open} onClose={onClose}>
       <h2>Edit Tugas</h2>
 
+      <label>Status</label>
       <select value={statusTugas} onChange={(e) => setStatus(e.target.value)}>
         <option value="orange-bg">Oranye</option>
         <option value="green-bg">Hijau</option>
@@ -78,24 +79,28 @@ export default function EditTugasModal({
         <option value="blue-bg">Biru</option>
       </select>
 
+      <label>Judul Tugas</label>
       <input
         placeholder="Judul"
         value={titleTugas}
         onChange={(e) => setTitle(e.target.value)}
       />
 
+      <label>Nama Tugas</label>
       <textarea
         placeholder="Nama Tugas"
         value={h1Tugas}
         onChange={(e) => setH1(e.target.value)}
       />
 
+      <label>Deskripsi Tugas</label>
       <textarea
         placeholder="Note 1, Deskripsi Tugas..."
         value={note1Tugas}
         onChange={(e) => setNote1(e.target.value)}
       />
     
+      <label>Note</label>
       <textarea
         placeholder="Note 2, Deadline:..."
         value={note2Tugas}
@@ -121,11 +126,11 @@ export default function EditTugasModal({
       {/* button */}
       <button
         onClick={handleUpdate}
-        disabled={isInvalid}
+        disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer"
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer"
         }}
       >
         {loading ? ("Loading...") : ("Simpan")}

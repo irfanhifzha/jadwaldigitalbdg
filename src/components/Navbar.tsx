@@ -15,9 +15,9 @@ export default function Navbar() {
           gap: "10px",
         }}
       >
-        <a className="card-menu bg-hover-p" style={{margin: '5px 0 15px 0'}} href="/">
+        <a className="card-menu bg-hover-p" style={{margin: 10}} href="/">
               <span className="material-symbols-rounded bg-border white-color">Home</span>
-              <h1>Back to Home</h1>
+              <h1> Back to Home</h1>
         </a>
 
         <AuthButton/>

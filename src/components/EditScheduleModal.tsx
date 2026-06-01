@@ -31,6 +31,7 @@ export default function EditScheduleModal({
 
   const [showInvalid, setShowInvalid] = useState(false);
 
+
   // ✅ load existing data
   useEffect(() => {
     if (open && data) {
@@ -77,6 +78,10 @@ export default function EditScheduleModal({
       setShowInvalid(false);
     }
   }, [open, dayIndex]);
+
+  useEffect(() => {
+    setSlots([]);
+  }, [dayIndex]);
 
   // 🔥 FIXED toggle logic (now includes program + semester)
   const toggleSlot = (slot: number) => {
@@ -133,16 +138,23 @@ export default function EditScheduleModal({
     <Modal open={open} onClose={onClose}>
       <h2>Edit Jadwal</h2>
 
+      <label>Program Studi</label>
       <input value={course} onChange={(e) => setCourse(e.target.value)} placeholder="Mata Kuliah" />
+
+      <label>Ruangan</label>
       <input value={room} onChange={(e) => setRoom(e.target.value)} placeholder="Ruangan" />
+      
+      <label>Dosen</label>
       <input value={lecturers} onChange={(e) => setLecturers(e.target.value)} placeholder="Dosen (dipisah dengan koma)" />
 
+      <label>Tipe</label>
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="teori">Teori</option>
         <option value="praktek">Praktek</option>
         <option value="tambahan">Matkul Tambahan</option>
       </select>
 
+      <label>Hari</label>
       <select
         value={dayIndex}
         onChange={(e) => setDayIndex(Number(e.target.value))}
@@ -166,10 +178,10 @@ export default function EditScheduleModal({
         </div>
       )}
 
-      <div style={{ marginTop: 10 }}>
+
         <label>Jam</label>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10 }}>
           {slotOptions.map((slot) => {
             const program = data?.program;
             const semester = data?.semester;
@@ -194,17 +206,17 @@ export default function EditScheduleModal({
             );
           })}
         </div>
-      </div>
 
+          <label>Note</label>
       <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (Optional)" />
 
       <button
         onClick={handleUpdate}
-        disabled={isInvalid}
+        disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer"
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer"
         }}
       >
         {loading ? ("Loading...") : ("Simpan")}

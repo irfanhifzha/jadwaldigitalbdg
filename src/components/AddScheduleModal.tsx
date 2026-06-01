@@ -41,9 +41,6 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
   const resetForm = () => {
     setProgram("");
     setSemester(0);
-    setCourse("");
-    setRoom("");
-    setLecturers("");
     setType("");
     setDayIndex(0);
     setSlots([]);
@@ -141,6 +138,7 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     <Modal open={open} onClose={handleClose}>
       <h2>Tambah Jadwal</h2>
 
+      <label>Program Studi</label>
       <select value={program} onChange={(e) => setProgram(e.target.value)}>
         <option value="" disabled>Pilih Program Studi</option>
         <option value="TRPL">TRPL</option>
@@ -148,6 +146,7 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         <option value="BISDIGeks">BISDIG-Eksekutif</option>
       </select>
 
+      <label>Semester</label>
       <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>
         <option value={0} disabled>Pilih Semester</option>
         <option value={1}>1</option>
@@ -160,24 +159,31 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         <option value={8}>8</option>
       </select>
 
+      
+
+      <label>Mata Kuliah</label>
       <input
         placeholder="Mata Kuliah"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
       />
 
+
+      <label>Ruangan</label>
       <input
         placeholder="Ruangan"
         value={room}
         onChange={(e) => setRoom(e.target.value)}
       />
 
+      <label>Dosen</label>
       <input
         placeholder="Dosen (dipisah dengan koma)"
         value={lecturers}
         onChange={(e) => setLecturers(e.target.value)}
       />
 
+      <label>Tipe</label>
       <select value={type} onChange={(e) => setType(e.target.value)}>
         <option value="" disabled>Pilih Tipe</option>
         <option value="teori">Teori</option>
@@ -185,6 +191,7 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         <option value="tambahan">Matkul Tambahan</option>
       </select>
 
+      <label>Hari</label>
       <select
         value={dayIndex}
         onChange={(e) => setDayIndex(Number(e.target.value))}
@@ -209,10 +216,9 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         </div>
       )}
 
-      <div style={{ marginTop: 10 }}>
         <label>Jam</label>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+        <div style={{ display: "flex", width:"100%", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10}}>
           {slotOptions.map((slot) => {
             const key = `${program}-${semester}-${dayIndex}-${slot}`;
             const isBlocked = occupiedSlots.has(key);
@@ -231,8 +237,8 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
             );
           })}
         </div>
-      </div>
 
+      <label>Note</label>
       <input
         placeholder="Note (Optional)"
         value={note}
@@ -244,8 +250,8 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
         disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer"
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer"
         }}
       >
         {loading ? ("Loading...") : ("Simpan")}

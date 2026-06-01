@@ -22,11 +22,6 @@ export default function AddTugasModal({
   // ✅ now ALWAYS works because data is full doc
   useEffect(() => {
     if (open && data) {
-      setStatus(data.statusTugas || "");
-      setTitle(data.titleTugas || "");
-      setH1(data.h1Tugas || "");
-      setNote1(data.note1Tugas || "");
-      setNote2(data.note2Tugas || "");
       setShowInvalid(false);
     }
   }, [open, data]);
@@ -37,6 +32,7 @@ export default function AddTugasModal({
     !h1Tugas.trim();
 
   const [loading, setLoading] = useState(false);
+  
 
   const handleSubmit = async () => {
 
@@ -68,11 +64,11 @@ export default function AddTugasModal({
     <Modal open={open} onClose={onClose}>
       <h2>Tambah Tugas</h2>
 
-      <p style={{ marginTop: -6, marginBottom: 12, fontSize: 13, opacity: 0.7 }}>
-        Menambah tugas ke {data?.course || "notfound"} - Hari {dayLabels[data?.dayIndex] || "harinotfound"}
+      <p style={{ marginTop: -6, marginBottom: 12, fontSize: 13}}>
+        Menambah tugas ke {data?.course || "notfound"} - Hari {dayLabels[data?.dayIndex-1] || "null"}
       </p>
 
-
+      <label>Status</label>
       <select value={statusTugas} onChange={(e) => setStatus(e.target.value)}>
         <option value="" disabled hidden>
           Pilih status
@@ -83,24 +79,28 @@ export default function AddTugasModal({
         <option value="blue-bg">Biru</option>
       </select>
 
+      <label>Judul Tugas</label>
       <input
         placeholder="Judul Tugas"
         value={titleTugas}
         onChange={(e) => setTitle(e.target.value)}
       />
 
+      <label>Nama Tugas</label>
       <textarea
         placeholder="Nama Tugas"
         value={h1Tugas}
         onChange={(e) => setH1(e.target.value)}
       />
 
+      <label>Deskripsi Tugas</label>
       <textarea
         placeholder="Note 1"
         value={note1Tugas}
         onChange={(e) => setNote1(e.target.value)}
       />
 
+      <label>Note</label>
       <textarea
         placeholder="Note 2"
         value={note2Tugas}
@@ -124,8 +124,8 @@ export default function AddTugasModal({
         disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer",
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer",
         }}
       >
         {loading ? ("Loading...") : ("Simpan")}

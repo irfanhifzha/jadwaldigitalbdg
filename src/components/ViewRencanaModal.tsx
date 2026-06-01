@@ -172,6 +172,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         </>
       )}
 
+      <label>Program</label>
       {/* PROGRAM */}
       <select
         value={program}
@@ -184,6 +185,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         <option value="BISDIGeks">BISDIG-Eksekutif</option>
       </select>
 
+      <label>Semester</label>
       {/* SEMESTER */}
       <select
         value={semester}
@@ -196,6 +198,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         ))}
       </select>
 
+      <label>Bulan</label>
       {/* BULAN */}
       <select
         value={bulan}
@@ -210,6 +213,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         ))}
       </select>
 
+      <label>Tahun</label>
       {/* TAHUN */}
       <input
         type="number"
@@ -218,10 +222,11 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         disabled={!editMode && !!data}
       />
 
+
       {/* TANGGAL */}
       <div style={{ marginTop: 10 }}>
         <label>Tanggal</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10, }}>
           {availableDates.map((day) => {
             const isSelected = tanggal.includes(day);
 
@@ -229,12 +234,13 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
               <div
                 key={day}
                 onClick={() => toggleDate(day)}
-                className="button-tgl"
+                className={`button-jam
+                  ${isSelected ? "selected enabled" : "enabled"}`}
+
                 style={{
-                  padding: "6px 10px",
-                  borderRadius: 6,
+                  borderColor: isSelected ? "#362dde" : "",
                   cursor: editMode || !data ? "pointer" : "not-allowed",
-                  background: isSelected ? "#4f46e5" : "#e5e7eb",
+                  background: isSelected ? "#4f46e5" : "",
                   color: isSelected ? "#fff" : "#000",
                   opacity: !editMode && !!data ? 0.6 : 1,
                 }}
@@ -246,9 +252,9 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         </div>
       </div>
 
+      <label>Tipe</label>
       {/* TYPE */}
       <select
-        style={{ marginTop: 20 }}
         value={type}
         onChange={(e) => setType(e.target.value)}
         disabled={!editMode && !!data}
@@ -261,6 +267,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         <option value="green-bg">Hijau</option>
       </select>
 
+      <label>Title</label>
       {/* TASK */}
       <input
         placeholder="Title rencana..."
@@ -269,6 +276,7 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
         readOnly={!editMode && !!data}
       />
 
+      <label>Deskripsi</label>
       {/* CONTENT */}
       <input
         placeholder="Deskripsi rencana..."
@@ -278,17 +286,18 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
       />
 
       {/* SAVE */}
-      <button
+      {editMode && ( <button
         onClick={handleSubmit}
         disabled={(!editMode && !!data) || isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer",
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer",
         }}
       >
         {loading ? "Loading..." : "Simpan"}
       </button>
+      )}
 
       {/* DELETE MODAL */}
       <DeleteRencanaModal

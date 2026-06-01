@@ -26,7 +26,7 @@ quality life update, nilai tambahan kalau bisa:
 
 =======
 
-DONE TODO versi ini:
+DONE TODO versi ini dan sebelumnya:
 - dynamic title web
 - filtering in jadwal all
 - live now 
@@ -34,11 +34,14 @@ DONE TODO versi ini:
 - ...
 - kurikulum
 - kalender crud
+- input dan form css rapihin
+- foto struktur kurikulum TRPL dan info gelar
+- ...
 
 TODO:
 - buat kalender each kelas (dibawah jadwal), tinggal sisanya bisdig and other..
-- input dan form css rapihin
 - buat SS or form to shareable text div, copy image or text to clipboard utk share
+- - foto struktur kurikulum BISDIG dan info gelar
 - ...
 - task older cal auto delete?
 

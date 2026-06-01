@@ -22,11 +22,6 @@ export default function AddTugasModalAgain({
   // ✅ now ALWAYS works because data is full doc
   useEffect(() => {
     if (open && data) {
-      setStatus(data.statusTugasAgain || "");
-      setTitle(data.titleTugasAgain || "");
-      setH1(data.h1TugasAgain || "");
-      setNote1(data.note1TugasAgain || "");
-      setNote2(data.note2TugasAgain || "");
       setShowInvalid(false);
     }
   }, [open, data]);
@@ -69,11 +64,13 @@ export default function AddTugasModalAgain({
     <Modal open={open} onClose={onClose}>
       <h2>Tambah Tugas Lagi</h2>
 
-      <p style={{ marginTop: -6, marginBottom: 12, fontSize: 13, opacity: 0.7 }}>
-        Menambah tugas ke {data?.course || "notfound"} - Hari {dayLabels[data?.dayIndex] || "harinotfound"}
+
+      <p style={{ marginTop: -6, marginBottom: 12, fontSize: 13 }}>
+        Menambah tugas ke {data?.course || "notfound"} - Hari {dayLabels[data?.dayIndex-1] || "harinotfound"}
       </p>
 
 
+      <label>Status</label>
       <select value={statusTugasAgain} onChange={(e) => setStatus(e.target.value)}>
         <option value="" disabled hidden>
           Pilih status
@@ -84,24 +81,28 @@ export default function AddTugasModalAgain({
         <option value="blue-bg">Biru</option>
       </select>
 
+      <label>Judul Tugas</label>
       <input
         placeholder="Judul Tugas"
         value={titleTugasAgain}
         onChange={(e) => setTitle(e.target.value)}
       />
 
+      <label>Nama Tugas</label>
       <textarea
         placeholder="Nama Tugas"
         value={h1TugasAgain}
         onChange={(e) => setH1(e.target.value)}
       />
 
+<label>Deskripsi Tugas</label>
       <textarea
         placeholder="Note 1"
         value={note1TugasAgain}
         onChange={(e) => setNote1(e.target.value)}
       />
 
+<label>Note</label>
       <textarea
         placeholder="Note 2"
         value={note2TugasAgain}
@@ -125,8 +126,8 @@ export default function AddTugasModalAgain({
         disabled={isInvalid || loading}
         style={{
           marginTop: 12,
-          opacity: isInvalid ? 0.5 : 1,
-          cursor: isInvalid ? "not-allowed" : "pointer",
+          opacity: isInvalid || loading ? 0.5 : 1,
+          cursor: isInvalid || loading ? "not-allowed" : "pointer",
         }}
       >
         {loading ? ("Loading...") : ("Simpan")}

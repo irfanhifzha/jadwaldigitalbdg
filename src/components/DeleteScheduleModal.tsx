@@ -18,10 +18,21 @@ export default function DeleteScheduleModal({ open, onClose, data, onSuccess }: 
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h3>Yakin mau hapus?</h3>
+            <h2>Yakin mau hapus?</h2>
             <p>{data?.course}</p>
 
-            <button onClick={handleDelete}>{loading ? ("Loading...") : ("Yes, Delete")}</button>
+            <button
+                onClick={handleDelete}
+                disabled={loading}
+                style={{
+                marginTop: 12,
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? "not-allowed" : "pointer"
+                }}
+            >
+                {loading ? ("Loading...") : ("Yes, Delete")}
+            </button>
+            
         </Modal>
     );
 }

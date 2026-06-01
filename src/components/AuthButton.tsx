@@ -60,9 +60,10 @@ export default function AuthButton() {
                     <button onClick={() => setOpen(true)}>Login</button>
 
                     <Modal open={open} onClose={() => setOpen(false)}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            <h3>Login</h3>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <h2>Login</h2>
 
+                            <label>Email</label>
                             <div style={{ display:"flex", position: "relative", width:"100%" }}>
                                 <input
                                     type="email"
@@ -73,6 +74,7 @@ export default function AuthButton() {
                                 />
                             </div>
 
+                            <label>Password</label>
                             <div style={{ display:"flex", position: "relative", width:"100%" }}>
                                 <input
                                     type={showPassword ? "text" : "password"}
@@ -99,7 +101,18 @@ export default function AuthButton() {
                                 </span>
                             </div>
 
-                            <button disabled={loading} onClick={handleLogin}> {loading ? ("Loading...") : ("Login")} </button>
+                            <button
+                                onClick={handleLogin}
+                                disabled={loading}
+                                style={{
+                                marginTop: 12,
+                                opacity: loading ? 0.5 : 1,
+                                cursor: loading ? "not-allowed" : "pointer"
+                                }}
+                            >
+                                {loading ? ("Loading...") : ("Login")}
+                            </button>
+            
                         </div>
                     </Modal>
                 </>

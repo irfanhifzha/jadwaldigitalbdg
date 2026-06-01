@@ -24,10 +24,21 @@ export default function DeleteTugasModal({ open, onClose, data, onSuccess }: any
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h3>Yakin mau hapus tugas?</h3>
+            <h2>Yakin mau hapus tugas?</h2>
             <p>"{data?.h1Tugas}"</p>
 
-            <button onClick={handleDelete}>{loading ? ("Loading...") : ("Yes, Delete")}</button>
+            <button
+                onClick={handleDelete}
+                disabled={loading}
+                style={{
+                marginTop: 12,
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? "not-allowed" : "pointer"
+                }}
+            >
+                {loading ? ("Loading...") : ("Yes, Delete")}
+            </button>
+            
         </Modal>
     );
 }

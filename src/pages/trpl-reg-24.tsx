@@ -27,7 +27,6 @@ import Dashboard from "../components/Dashboard";
 
 // MODALS UNTUK CALENDAR
 import AddRencanaModal from "../components/AddRencanaModal";
-// import DeleteRencanaModal from "../components/DeleteRencanaModal";
 import ViewRencanaModal from "../components/ViewRencanaModal";
 
 
@@ -233,7 +232,8 @@ export default function TrplReg24() {
                                                     {/* LIVE BADGE (ONLY FOR ACTIVE CLASS) */}
                                                     {liveMatkul && liveMatkul.id === s.id && (
                                                         <div className="live-jadwal">
-                                                            <div className="circle-blink green-bg"></div><span> Kelas Live | Segera Absen</span>
+                                                            <div className="circle-blink green-bg"></div>
+                                                            <span> Kelas Live | Segera Absen</span>
                                                         </div>
                                                     )}
                                                     
@@ -537,9 +537,16 @@ export default function TrplReg24() {
     const renderCalendar = () => {
         return (
         <div className="card-content-body bg-invert bg-border">
+            
+
+            {/* TITLE */}
+            {/* <h2>
+                TRPL REG 24 - Semester {semester} {kategori} / SKS {sks_semesterini}
+            </h2> */}
 
             {/* TITLE */}
             <h2>
+                TRPL REG 24 - Timeline Kegiatan {" "}
                 {
                     currentDate.toLocaleString(
                         "default",
@@ -791,11 +798,20 @@ export default function TrplReg24() {
                     {renderTable(`TRPL REG 24 - Semester ${semester} (${kategori}) / SKS ${sks_semesterini}`, Schedule)}
 
                     {renderCalendar()}
-                     <img
-                        src={fotokurikulum}
-                        alt="Kurikulum TRPL"
-                        style={{ height: "300px", width:"auto", objectFit: "contain"}}
-                    />
+                     
+                    <div className="card-content-body bg-invert bg-border">
+                        <h2>TRPL - Struktur Kurikulum Akademi Digital Bandung</h2>
+                        <p>D4 / S.Tr.Kom (Sarjana Terapan Komputer)</p>
+                        
+                        <img
+                            src={fotokurikulum}
+                            alt="Kurikulum_TRPL"
+                            style={{ height: "auto", width:"85%", objectFit: "contain", margin: "15px 0 0 0"}}
+                            className="card-content-body bg-invert bg-border"
+                        />
+                    </div>
+
+
                 </div>
             </div>
 
@@ -815,7 +831,6 @@ export default function TrplReg24() {
 
             {/* MODAL UNTUK CALENDAR RENCANA */}
             <AddRencanaModal open={openAddRencana} onClose={() => setOpenAddRencana(false)} onSuccess={fetchCalendar} />
-            {/* <DeleteRencanaModal open={openDeleteRencana} data={selected_cal} onClose={() => setOpenDeleteRencana(false)} onSuccess={fetchCalendar} /> */}
             <ViewRencanaModal open={openViewRencana} data={selected_cal} onClose={() => setOpenViewRencana(false)} onSuccess={fetchCalendar} />
 
 

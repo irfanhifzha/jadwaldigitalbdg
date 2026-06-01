@@ -25,6 +25,8 @@ import EditTugasModalAgain from "../components/EditTugasModalAgain";
 import DeleteTugasModalAgain from "../components/DeleteTugasModalAgain";
 import Dashboard from "../components/Dashboard";
 
+import fotokurikulum from "../assets/kurikulumTRPL.png"
+
 type Schedule = {
     id?: string;
 
@@ -389,6 +391,20 @@ export default function TrplReg25() {
                     
 
                     {renderTable(`TRPL REG 25 - Semester ${semester} (${kategori})  / SKS ${sks_semesterini}`, Schedule)}
+
+                    <div className="card-content-body bg-invert bg-border">
+                        <h2>TRPL - Struktur Kurikulum Akademi Digital Bandung</h2>
+                        <p>D4 / S.Tr.Kom (Sarjana Terapan Komputer)</p>
+                        
+                        <img
+                            src={fotokurikulum}
+                            alt="Kurikulum TRPL"
+                            style={{ height: "auto", width:"85%", objectFit: "contain", margin: "15px 0 0 0"}}
+                            className="card-content-body bg-invert bg-border"
+                        />
+                    </div>
+
+
                 </div>
             </div>
 
