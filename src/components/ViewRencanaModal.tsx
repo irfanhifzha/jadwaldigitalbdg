@@ -515,8 +515,8 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
                 <label>📪 Dibuat Pada</label>
                 <div className="mt-1 py-1">
                   <p className="text-gray-400 text-xs">
-                    {data?.createdAt ? (() => {
-                      const date = data.createdAt.toDate();
+                    {data?.item?.createdAt ? (() => {
+                      const date = data.item.createdAt.toDate();
                       return `${date.toLocaleDateString('id-ID', {
                         weekday: 'long',
                         day: 'numeric',
@@ -535,8 +535,8 @@ export default function ViewRencanaModal({ open, data, onClose, onSuccess }: any
                 <label>✒️ Diedit Pada</label>
                 <div className="mt-1 py-1">
                   <p className="text-gray-400 text-xs">
-                    {data?.editAt ? (() => {
-                      const date = data.editAt.toDate();
+                    {data?.item?.editAt ? (() => {
+                      const date = data.item.editAt.toDate();
                       return `${date.toLocaleDateString('id-ID', {
                         weekday: 'long',
                         day: 'numeric',
