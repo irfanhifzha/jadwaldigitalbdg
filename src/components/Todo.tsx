@@ -105,7 +105,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
     return (
         <>
             <div className="flex items-center gap-2">
-                {!isValidKategori && (<div className="text-xs text-red-700 bg-white p-2">[{task.kategori}]</div>)}
+                {!isValidKategori && (<div className="text-xs text-red-700 bg-white px-2 py-1 rounded-lg">[{task.kategori}]</div>)}
                 <div className={`h-2 w-full rounded-md ${theme.card}`} />
                 {editMode && (<div className={`h-2 w-2 rounded-md ${theme.card} animate-[pulse_0.75s_infinite]`} />)}
             </div>

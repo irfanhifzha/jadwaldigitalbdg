@@ -167,7 +167,7 @@ function Home() {
 
                         </div>
 
-                        <p className="mt-6 text-center text-sm text-gray-500">
+                        <p className="my-6 text-center text-sm text-gray-500">
                             Pilih Kelas Diatas
                         </p>
 

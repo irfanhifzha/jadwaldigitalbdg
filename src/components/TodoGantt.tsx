@@ -395,7 +395,7 @@ export default function TodoGantt({ category }: any) {
                         {visibleTasks.map((task) => (
                             <div key={task.id} className="flex border-b border-gray-100 h-[40px] items-center">
                                 <div className="w-[180px] shrink-0 px-2 text-xs truncate" title={task.title}>
-                                    {task.title} {!isValidKategori && (<span className="text-red-700 bg-white p-2">[{task.kategori}]</span>)}
+                                    {task.title} {!isValidKategori && (<span className="text-red-700 px-1 bg-white">[{task.kategori}]</span>)}
                                 </div>
                                 <div
                                     className="relative h-full overflow-hidden"

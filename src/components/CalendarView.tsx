@@ -290,7 +290,7 @@ export default function CalendarView({ kategori, user }: Props) {
                                                                                 <button
                                                                                     className={`cursor-pointer flex justify-center w-5 h-5 rounded-full mx-auto mb-1 ${statusStyles[item.type] || "bg-gray-400"}`}
                                                                                 />
-                                                                                <div className="text-xs text-center line-clamp-3 break-all">{item.task} {!isValidKategori && (<span className="text-red-700 bg-white p-2">[{item.kategori}]</span>)}</div>
+                                                                                <div className="text-xs text-center line-clamp-3 break-all">{item.task} {!isValidKategori && (<span className="text-red-700 mx-1 bg-white">[{item.kategori}]</span>)}</div>
                                                                             </div>
 
                                                                             {item.peoples.length > 0 && (
@@ -357,7 +357,7 @@ export default function CalendarView({ kategori, user }: Props) {
                                                                     }}
                                                                     className="text-sm cursor-pointer overflow-hidden"
                                                                 >
-                                                                    <span className="block truncate text-xs select-text">{item.task} {!isValidKategori && (<span className="text-red-700 bg-white p-2">[{item.kategori}]</span>)}</span> 
+                                                                    <span className="block truncate text-xs select-text">{item.task} {!isValidKategori && (<span className="text-red-700 bg-white mx-1 px-1.5 rounded-md">[{item.kategori}]</span>)}</span> 
                                                                 </button>
                                                             )}
                                                         </div>

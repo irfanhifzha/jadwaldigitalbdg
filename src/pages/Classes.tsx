@@ -12,6 +12,8 @@ import { Category } from "../types/scheduleTypes";
 
 import { collection, query, where, getDocs } from "firebase/firestore";
 
+import fotokurikulum from "../assets/kurikulumTRPL.png"
+
 type HomeProps = {
     kategori?: Category;
 };
@@ -92,6 +94,33 @@ export default function Classes({ kategori }: HomeProps) {
                     <Todo kategori={kategori} user={isValidKategori ? user : null} />
                     <CalendarView kategori={kategori} user={isValidKategori ? user : null} />
                     <ScheduleTable kategori={kategori} user={isValidKategori ? user : null} />
+
+                    
+
+
+
+                    { (!isValidKategori || (kategori === "TRPL24" || kategori === "TRPL25")) && (<div className="flex flex-col gap-2 w-fit max-w-4xl min-w-[320px] h-fit rounded-2xl px-8 py-6 border border-gray-200 justify-center bg-white">
+
+                        <div className="font-bold">
+                            TRPL - Struktur Kurikulum Akademi Digital Bandung
+                        </div>
+
+                        <div>
+                            D4 / S.Tr.Kom (Sarjana Terapan Komputer)
+                        </div>
+
+                        {/* image wrapper controls large images */}
+                        <div className="w-full max-h-[80vh] overflow-auto border border-gray-200 rounded-lg">
+                            <img
+                                src={fotokurikulum}
+                                alt="Kurikulum_TRPL"
+                                className="w-full h-auto object-contain"
+                            />
+                        </div>
+
+                    </div>)}
+
+
                 </div>
             </div>
         </>
