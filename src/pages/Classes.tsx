@@ -120,6 +120,27 @@ export default function Classes({ kategori }: HomeProps) {
 
                     </div>)}
 
+                    { (!isValidKategori || (kategori === "BISDIG24" || kategori === "BISDIG25" || kategori === "BISDIGeks24" || kategori === "BISDIGeks25")) && (<div className="flex flex-col gap-2 w-fit max-w-4xl min-w-[320px] h-fit rounded-2xl px-8 py-6 border border-gray-200 justify-center bg-white">
+
+                        <div className="font-bold">
+                            BISNIS DIGITAL - Struktur Kurikulum Akademi Digital Bandung
+                        </div>
+
+                        <div>
+                            D4 / Sarjana Terapan Bisnis Digital (S.Tr.Bns.) atau Sarjana Bisnis Digital (S.Bns.)
+                        </div>
+
+                        {/* image wrapper controls large images */}
+                        <div className="w-full max-h-[80vh] overflow-auto border border-gray-200 rounded-lg">
+                            <img
+                                src=""
+                                alt="Kurikulum_BISDIG"
+                                className="w-full h-auto object-contain"
+                            />
+                        </div>
+
+                    </div>)}
+
 
                 </div>
             </div>
