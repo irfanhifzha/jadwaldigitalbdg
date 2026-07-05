@@ -1,0 +1,99 @@
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import type { User } from "firebase/auth";
+import { db, auth } from "../firebase";
+
+import Navbar from "../components/Navbar";
+
+import CalendarView from "../components/CalendarView";
+import ScheduleTable from "../components/ScheduleTable";
+import Todo from "../components/Todo";
+import { Category } from "../types/scheduleTypes";
+
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+type HomeProps = {
+    kategori?: Category;
+};
+
+export default function Classes({ kategori }: HomeProps) {
+
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+        return () => unsub();
+    }, []);
+
+    const [data, setData] = useState<any>(null);
+
+    useEffect(() => {
+        if (!kategori) {
+            setData(null);
+            return;
+        }
+
+        async function fetchData() {
+            const q = query(
+                collection(db, "kelas"),
+                where("kategori", "==", kategori)
+            );
+
+            const snap = await getDocs(q);
+
+            if (!snap.empty) {
+                setData(snap.docs[0].data());
+            } else {
+                setData(null);
+            }
+        }
+
+        fetchData();
+    }, [kategori]);
+
+    const isValidKategori = !!kategori;
+
+
+    return (
+        <>
+            <Navbar />
+
+            <div className="mx-5 px-4 flex gap-2 text-bold">
+                <p className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                    Kelas <span className="uppercase">{isValidKategori ? (data?.kategori ?? "-") : "ALL"}</span>
+                </p>
+
+                <p className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
+                    Semester{" "}
+                    {isValidKategori ? (data?.semester ?? "-") : "ALL"}{" "}
+                    {data?.semester
+                        ? Number(data.semester) % 2 === 0
+                            ? "(Genap)"
+                            : "(Ganjil)"
+                        : ""}
+                </p>
+
+                <p className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+                    {isValidKategori
+                        ? (data?.sks_semesterini ?? "-")
+                        : "ALL"}{" "}
+                    SKS
+                </p>
+            </div>
+
+
+
+            <div className="m-0 p-0 flex flex-col">
+                <div className="flex flex-col h-fit rounded-2xl gap-2 px-4 pb-5 overflow-hidden mx-5 bg-white">
+                    <div>
+                        <p className="font-bold text-lg"></p>
+                    </div>
+
+                    <Todo kategori={kategori} user={isValidKategori ? user : null} />
+                    <CalendarView kategori={kategori} user={isValidKategori ? user : null} />
+                    <ScheduleTable kategori={kategori} user={isValidKategori ? user : null} />
+                </div>
+            </div>
+        </>
+    );
+}

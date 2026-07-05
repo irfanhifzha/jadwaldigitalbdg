@@ -5,22 +5,21 @@ export default function Navbar() {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          marginTop: "20px",
-          gap: "10px",
-        }}
-      >
-        <a className="card-menu bg-hover-p" style={{margin: 10}} href="/">
-              <span className="material-symbols-rounded bg-border white-color">Home</span>
-              <h1> Back to Home</h1>
+      <div className="flex items-center justify-between gap-4 m-5 px-3 mb-8">
+
+        <a href="/" className="flex items-center gap-[12px] w-[220px] h-fit px-5 py-3 rounded-2xl border border-gray-200 cursor-pointer transition duration-200 ease bg-white-100 hover:-translate-y-1 hover:shadow-sm hover:bg-orange-100 hover:text-orange-700 active:scale-95">
+
+          <div className="flex items-center justify-center w-[40px] h-[40px] border border-gray-200 rounded-lg bg-white">
+            <span className="material-symbols-rounded select-none">
+              Home
+            </span>
+          </div>
+
+          <p className="text-md font-normal m-0">Back to Home</p>
+
         </a>
 
-        <AuthButton/>
+        <AuthButton />
 
       </div>
     </>

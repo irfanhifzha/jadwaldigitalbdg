@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 
 const days = [
@@ -8,51 +8,50 @@ const days = [
   { label: "Selasa", value: 2 },
   { label: "Rabu", value: 3 },
   { label: "Kamis", value: 4 },
-  { label: "Jumat", value: 5 }
+  { label: "Jumat", value: 5 },
+  { label: "Sabtu", value: 6 }, { label: "Minggu", value: 7 },
 ];
 
 const slotOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
-export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
+export default function AddScheduleModal({ open, onClose, onSuccess, category }: any) {
+
+  const kategori = category;
+  
   const [course, setCourse] = useState("");
   const [room, setRoom] = useState("");
-  const [lecturers, setLecturers] = useState("");
+  const [peoples, setPeoples] = useState("");
   const [type, setType] = useState("");
-  const [program, setProgram] = useState("");
-  const [semester, setSemester] = useState<number>(0);
   const [dayIndex, setDayIndex] = useState<number>(0);
   const [slots, setSlots] = useState<number[]>([]);
   const [occupiedSlots, setOccupiedSlots] = useState<Set<string>>(new Set());
+  const [desc, setDesc] = useState("");
   const [note, setNote] = useState("");
 
-  const [showInvalid, setShowInvalid] = useState(false);
+  
 
-  // validation (UNCHANGED LOGIC FIX ONLY)
-  const isInvalid =
-    !program.trim() ||
-    semester === 0 ||
-    !course.trim() ||
-    !room.trim() ||
-    !lecturers.trim() ||
-    !type.trim() ||
-    dayIndex === 0 ||
-    slots.length === 0;
+
 
   const resetForm = () => {
-    setProgram("");
-    setSemester(0);
+    setCourse("");
+    setPeoples("");
+    setRoom("");
+    setDesc("");
+    setNote("");
     setType("");
     setDayIndex(0);
     setSlots([]);
-    setShowInvalid(false);
   };
 
   const handleClose = () => {
+    setErrors({});
+    setFormError(null);
+    setLoading(false);
     resetForm();
     onClose();
   };
 
-  // 🔥 FIXED: now includes program + semester
+
   const loadConflicts = async () => {
     const snap = await getDocs(collection(db, "schedules"));
 
@@ -64,13 +63,12 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
       const day = d.dayIndex;
       const s = d.slots || [];
 
-      const existingProgram = d.program;
-      const existingSemester = d.semester;
+      const existingCategory = d.kategori;
+
 
       s.forEach((slot: number) => {
-        // ✅ NEW KEY STRUCTURE (IMPORTANT FIX)
         occupied.add(
-          `${existingProgram}-${existingSemester}-${day}-${slot}`
+          `${existingCategory}-${day}-${slot}`
         );
       });
     });
@@ -89,9 +87,9 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
     setSlots([]);
   }, [dayIndex]);
 
-  // 🔥 FIXED: check includes program + semester
+
   const toggleSlot = (slot: number) => {
-    const key = `${program}-${semester}-${dayIndex}-${slot}`;
+    const key = `${kategori}-${dayIndex}-${slot}`;
 
     if (occupiedSlots.has(key)) return;
 
@@ -104,123 +102,167 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
 
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
 
+
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+
+    if (!course.trim()) errors.course = "Judul wajib diisi";
+    if (!type.trim()) errors.type = "Tipe wajib diisi";
+    if (dayIndex === 0) errors.dayIndex = "Hari wajib diisi";
+    if (slots.length === 0) errors.slots = "Jam wajib diisi";
+
+    return errors;
+  };
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+
+
+  // ===== SUBMIT =====
+  const handleSubmit = async () => {
+    if (loading) return;
+
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setFormError("Mohon lengkapi form terlebih dahulu");
+      return;
+    }
+
+    setErrors({});
+    setFormError(null);
     setLoading(true);
 
-    if (isInvalid) {
-      setShowInvalid(true);
-      return;
-    } 
+    try {
+      const payload = {
+        dayIndex,
+        slots,
+        course,
+        room,
+        peoples: peoples
+          .split(",")
+          .map((l) => l.trim())
+          .filter(Boolean),
+        type,
+        desc,
+        note,
+        kategori,
+        createdAt: serverTimestamp(),
+      };
 
-    await addDoc(collection(db, "schedules"), {
-      program,
-      semester,
-      dayIndex,
-      slots,
-      course,
-      room,
-      lecturers: lecturers
-        .split(",")
-        .map((l) => l.trim())
-        .filter(Boolean),
-      type,
-      note,
-    });
 
-    setLoading(false);
+      await addDoc(collection(db, "schedules"), payload);
 
-    onSuccess();
-    handleClose();
+      onSuccess();
+      handleClose();
+    } catch (err) {
+      setFormError(`(${err})\n\nGagal menyimpan data`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <h2>Tambah Jadwal</h2>
+      <h2>+ Tambah Jadwal</h2>
 
-      <label>Program Studi</label>
-      <select value={program} onChange={(e) => setProgram(e.target.value)}>
-        <option value="" disabled>Pilih Program Studi</option>
-        <option value="TRPL">TRPL</option>
-        <option value="BISDIG">BISDIG-Reguler</option>
-        <option value="BISDIGeks">BISDIG-Eksekutif</option>
-      </select>
+      <form onSubmit={handleSubmit}>
 
-      <label>Semester</label>
-      <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>
-        <option value={0} disabled>Pilih Semester</option>
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3</option>
-        <option value={4}>4</option>
-        <option value={5}>5</option>
-        <option value={6}>6</option>
-        <option value={7}>7</option>
-        <option value={8}>8</option>
-      </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4">
+          <div>
+            <label htmlFor="title">📝 Judul<span>*</span></label>
+            <input
+              className="w-full"
+              id="title"
+              placeholder="Judul rencana"
+              value={course}
+              onChange={(e) => setCourse(e.target.value)}
+            />
+          </div>
 
-      
-
-      <label>Mata Kuliah</label>
-      <input
-        placeholder="Mata Kuliah"
-        value={course}
-        onChange={(e) => setCourse(e.target.value)}
-      />
-
-
-      <label>Ruangan</label>
-      <input
-        placeholder="Ruangan"
-        value={room}
-        onChange={(e) => setRoom(e.target.value)}
-      />
-
-      <label>Dosen</label>
-      <input
-        placeholder="Dosen (dipisah dengan koma)"
-        value={lecturers}
-        onChange={(e) => setLecturers(e.target.value)}
-      />
-
-      <label>Tipe</label>
-      <select value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="" disabled>Pilih Tipe</option>
-        <option value="teori">Teori</option>
-        <option value="praktek">Praktek</option>
-        <option value="tambahan">Matkul Tambahan</option>
-      </select>
-
-      <label>Hari</label>
-      <select
-        value={dayIndex}
-        onChange={(e) => setDayIndex(Number(e.target.value))}
-      >
-        <option value={0} disabled>Pilih Hari</option>
-        {days.map((d) => (
-          <option key={d.value} value={d.value}>
-            {d.label}
-          </option>
-        ))}
-      </select>
-
-      {showInvalid && (
-        <div style={{
-          background: "#ffe5e5",
-          color: "#b00020",
-          padding: 10,
-          marginTop: 10,
-          borderRadius: 6
-        }}>
-          Semua field wajib diisi dan minimal 1 jam harus dipilih
+          <div>
+            <label htmlFor="tipe">🏷️ Tipe<span>*</span></label>
+            <select className="w-full" id="tipe" value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="" disabled hidden>Pilih Warna</option>
+              <option value="green">Hijau</option>
+              <option value="blue">Biru</option>
+              <option value="red">Merah</option>
+              <option value="orange">Oranye</option>
+              <option value="purple">Purple</option>
+              <option value="abu">Abu</option>
+            </select>
+          </div>
         </div>
-      )}
 
-        <label>Jam</label>
 
-        <div style={{ display: "flex", width:"100%", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10}}>
+
+
+
+        <label htmlFor="ruangan">🏢 Tempat</label>
+        <input
+          className="w-full"
+          id="ruangan"
+          placeholder="Ruangan"
+          value={room}
+          onChange={(e) => setRoom(e.target.value)}
+        />
+
+        <label htmlFor="peoples">👥 Pihak Terkait</label>
+        <input
+          id="peoples"
+          placeholder="A, B, .. (dipisah dengan koma)"
+          value={peoples}
+          onChange={(e) => setPeoples(e.target.value)}
+        />
+
+        <label htmlFor="desc">💬 Deskripsi</label>
+        <textarea
+          id="desc"
+          rows={4}
+          placeholder="Deskripsi rencana"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+        />
+
+        <label htmlFor="note">📌 Note / Link URL</label>
+        <textarea
+          rows={4}
+          id="note"
+          placeholder="Note rencana / Link url"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+
+
+
+
+
+        <label htmlFor="hari">📅 Hari<span>*</span></label>
+        <select
+          className="w-full"
+          id="hari"
+          value={dayIndex}
+          onChange={(e) => setDayIndex(Number(e.target.value))}
+        >
+          <option value={0} disabled>Pilih Hari</option>
+          {days.map((d) => (
+            <option key={d.value} value={d.value}>
+              {d.label}
+            </option>
+          ))}
+        </select>
+
+
+
+
+        <label htmlFor="jam">🕒 Jam<span>*</span></label>
+        <input id="jam" disabled value={[...slots].sort((a, b) => a - b).join(", ")} className="flex w-full h-8"></input>
+        <div className="flex flex-wrap w-full gap-1 mt-1 mb-1">
           {slotOptions.map((slot) => {
-            const key = `${program}-${semester}-${dayIndex}-${slot}`;
+            const key = `${kategori}-${dayIndex}-${slot}`;
             const isBlocked = occupiedSlots.has(key);
             const isSelected = slots.includes(slot);
 
@@ -238,24 +280,32 @@ export default function AddScheduleModal({ open, onClose, onSuccess }: any) {
           })}
         </div>
 
-      <label>Note</label>
-      <input
-        placeholder="Note (Optional)"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
+        {formError && (
+          <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+            <div className="whitespace-pre-line break-words">
+              {formError}
+            </div>
 
-      <button
-        onClick={handleSubmit}
-        disabled={isInvalid || loading}
-        style={{
-          marginTop: 12,
-          opacity: isInvalid || loading ? 0.5 : 1,
-          cursor: isInvalid || loading ? "not-allowed" : "pointer"
-        }}
-      >
-        {loading ? ("Loading...") : ("Simpan")}
-      </button>
+            {Object.keys(errors).length > 0 && (
+              <ul className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs">
+                {errors.course && <li>• {errors.course}</li>}
+                {errors.type && <li>• {errors.type}</li>}
+                {errors.dayIndex && <li>• {errors.dayIndex}</li>}
+                {errors.slots && <li>• {errors.slots}</li>}
+              </ul>
+            )}
+          </div>
+        )}
+
+
+
+        <button type="button"
+          onClick={handleSubmit}
+          disabled={loading}
+          className={`mt-2 border border-blue-200! px-4 py-2 rounded-md transition ${loading ? "bg-blue-300! opacity-50 cursor-not-allowed!" : "hover:bg-blue-600 hover:text-white! active:bg-blue-800! active:text-white! cursor-pointer"}`}>
+          {loading ? "⏳ Loading..." : "+ Tambah Jadwal"}
+        </button>
+      </form>
     </Modal>
   );
 }

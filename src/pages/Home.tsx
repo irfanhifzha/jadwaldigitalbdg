@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 function Home() {
 
     useEffect(() => {
-            document.title = "Jadwal Akademi Digital Bandung";
+        document.title = "Jadwal Akademi Digital Bandung";
     }, []);
 
 
-      // offline mode firestore
+    // offline mode firestore
     const [isOnline, setIsOnline] = useState(navigator.onLine);
 
     useEffect(() => {
@@ -20,92 +20,162 @@ function Home() {
         window.addEventListener("offline", handleOffline);
 
         return () => {
-        window.removeEventListener("online", handleOnline);
-        window.removeEventListener("offline", handleOffline);
+            window.removeEventListener("online", handleOnline);
+            window.removeEventListener("offline", handleOffline);
         };
     }, []);
 
-  return (
-    <>
-      <div style={{display: "flex", flexDirection:"column", height:"100vh", alignItems:"center", justifyContent:"center"}}>
-        <div className="card-content">
-            <div className="card-content-header center" style={{margin:15}}>
-                <span className="bg-border" style={{padding: 5}}><img src="/favicon.svg" style={{width:"40px"}}></img></span>
-                <h1 style={{color: "var(--black)", fontWeight:500}}>Jadwal Kuliah Akademi Digital Bandung</h1>
-            </div>
+    return (
+        <>
+            <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
+                <div className="w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
 
-            <div className="card-content-body bg-invert bg-border center"  style={{maxHeight:400, overflowY:"scroll"}}>
-                <h2>Dashboard Jadwal Kuliah</h2>
+                    {/* Header */}
+                    <div className="mb-6 flex gap-2 items-center justify-center text-center">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-gray-200">
+                            <img src="/favicon.svg" className="w-10" alt="Logo" />
+                        </div>
 
-                {!isOnline && (
-                            <div
-                            style={{
-                                fontSize: "10px",
-                                color: "#ef4444",
-                                border: "1px solid #6b7280",
-                                borderRadius: "16px",
-                                padding: "8px",
-                                marginTop: "8px",
-                            }}
-                            >
-                                You're offline — showing cached data
+                        <div className="text-lg font-semibold text-gray-900">
+                            Jadwal Akademi Digital Bandung
+                        </div>
+                    </div>
+
+                    {/* Body */}
+                    <div className="max-h-[420px] overflow-y-auto border border-gray-200 rounded-lg py-4 px-7">
+
+                        <h2 className="mb-4 text-center text-md font-medium">
+                            Dashboard Jadwal Kuliah
+                        </h2>
+
+                        {!isOnline && (
+                            <div className="mb-4 rounded-xl text-center border border-red-200 bg-red-50 px-4 py-6 text-sm text-red-600">
+                                You're offline — showing cached data.
                             </div>
-                )}
+                        )}
 
-                <div style={{display:"flex", flexDirection:"column", gap:2, width:"100%", marginBottom:20}} className="center">
-                    <a className="card-menu bg-hover-b" href="/trpl-reg-24">
-                        <span className="material-symbols-rounded bg-border white-color">function </span>
-                        <h1>Jadwal TRPL REG 24</h1>
-                    </a>
+                        <div className="flex flex-col gap-3 py-2">
 
-                    <a className="card-menu bg-hover-g" href="/bisdig-reg-24">
-                        <span className="material-symbols-rounded bg-border white-color">analytics </span>
-                        <h1>Jadwal BISDIG REG 24</h1>
-                    </a>
+                            <a
+                                href="/trpl-reg-24"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        function
+                                    </span>
+                                </div>
 
+                                <p className="text-xs font-medium">
+                                    Jadwal TRPL REG 24
+                                </p>
+                            </a>
 
-                    <a className="card-menu bg-hover-p" href="/trpl-reg-25">
-                        <span className="material-symbols-rounded bg-border white-color">cards_stack </span>
-                        <h1>Jadwal TRPL REG 25</h1>
-                    </a>
+                            <a
+                                href="/bisdig-reg-24"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-green-300 hover:bg-green-50 hover:text-green-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        analytics
+                                    </span>
+                                </div>
 
-                    <a className="card-menu bg-hover-o" href="/bisdig-reg-25">
-                        <span className="material-symbols-rounded bg-border white-color">business_center </span>
-                        <h1>Jadwal BISDIG REG 25</h1>
-                    </a>
+                                <p className="text-xs font-medium">
+                                    Jadwal BISDIG REG 24
+                                </p>
+                            </a>
 
+                            <a
+                                href="/trpl-reg-25"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        cards_stack
+                                    </span>
+                                </div>
 
-                    <div>----</div>
-        
+                                <p className="text-xs font-medium">
+                                    Jadwal TRPL REG 25
+                                </p>
+                            </a>
 
-                    <a className="card-menu bg-hover-b" href="/bisdig-eks-24">
-                        <span className="material-symbols-rounded bg-border white-color">chart_data </span>
-                        <h1>Jadwal BISDIG EKS 24</h1>
-                    </a>
+                            <a
+                                href="/bisdig-reg-25"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        business_center
+                                    </span>
+                                </div>
 
-                    <a className="card-menu bg-hover-p" href="/bisdig-eks-25">
-                        <span className="material-symbols-rounded bg-border white-color">domain </span>
-                        <h1>Jadwal BISDIG EKS 25</h1>
-                    </a>
+                                <p className="text-xs font-medium">
+                                    Jadwal BISDIG REG 25
+                                </p>
+                            </a>
 
-                    <div>----</div>
-        
+                            <div className="my-2 border-t border-gray-200" />
 
-                    <a className="card-menu bg-hover-r" href="/dashboard-all">
-                        <span className="material-symbols-rounded bg-border white-color">experiment </span>
-                        <h1>Jadwal ALL (Eksperimental)</h1>
-                    </a>
+                            <a
+                                href="/bisdig-eks-24"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        chart_data
+                                    </span>
+                                </div>
 
+                                <p className="text-xs font-medium">
+                                    Jadwal BISDIG EKS 24
+                                </p>
+                            </a>
 
+                            <a
+                                href="/bisdig-eks-25"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-pink-300 hover:bg-pink-50 hover:text-pink-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        domain
+                                    </span>
+                                </div>
+
+                                <p className="text-xs font-medium">
+                                    Jadwal BISDIG EKS 25
+                                </p>
+                            </a>
+
+                            <div className="my-2 border-t border-gray-200" />
+
+                            <a
+                                href="/dashboard-all"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-red-300 hover:bg-red-50 hover:text-red-700 hover:shadow-sm"
+                            >
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                    <span className="material-symbols-rounded">
+                                        experiment
+                                    </span>
+                                </div>
+
+                                <p className="text-xs font-medium">
+                                    Jadwal ALL (Eksperimental)
+                                </p>
+                            </a>
+
+                        </div>
+
+                        <p className="mt-6 text-center text-sm text-gray-500">
+                            Pilih Kelas Diatas
+                        </p>
+
+                    </div>
                 </div>
-
-                <p>Pilih Kelas dan Angkatan Diatas</p>
-
             </div>
-        </div>
-      </div>
-    </>
-  )
+        </>
+    )
 }
 
 export default Home

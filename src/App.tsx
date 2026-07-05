@@ -1,13 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import TrplReg24  from "./pages/trpl-reg-24";
-import BisdigReg24  from "./pages/bisdig-reg-24";
-import TrplReg25  from "./pages/trpl-reg-25";
-import BisdigReg25  from "./pages/bisdig-reg-25";
-import BisdigEks24  from "./pages/bisdig-eks-24";
-import BisdigEks25  from "./pages/bisdig-eks-25";
-import DashboardAll  from "./pages/dashboard-all";
+import Classes from "./pages/Classes";
 
 
 function App() {
@@ -16,17 +10,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/trpl-reg-24" element={<TrplReg24 />} />
-        <Route path="/bisdig-reg-24" element={<BisdigReg24 />} />
-        <Route path="/trpl-reg-25" element={<TrplReg25 />} />
-        <Route path="/bisdig-reg-25" element={<BisdigReg25 />} />
 
-        <Route path="/bisdig-eks-24" element={<BisdigEks24 />} />
-        <Route path="/bisdig-eks-25" element={<BisdigEks25 />} />
+        <Route path="/trpl-reg-24" element={<Classes kategori="TRPL24" />} />
+        <Route path="/trpl-reg-25" element={<Classes kategori="TRPL25" />} />
+        <Route path="/bisdig-reg-24" element={<Classes kategori="BISDIG24" />} />
+        <Route path="/bisdig-reg-25" element={<Classes kategori="BISDIG25" />} />
+        <Route path="/bisdig-eks-24" element={<Classes kategori="BISDIGeks24" />} />
+        <Route path="/bisdig-eks-25" element={<Classes kategori="BISDIGeks25" />} />
 
-        <Route path="/dashboard-all" element={<DashboardAll />} />
 
-       
+
+        <Route path="/dashboard-all" element={<Classes />} />
+
+
 
 
         {/* 404 route */}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 
 const months = [
@@ -18,33 +18,88 @@ const months = [
   { label: "Desember", value: 12 },
 ];
 
-export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
+export default function AddRencanaModal({ open, onClose, onSuccess, category }: any) {
+
+  const kategori = category;
+
   const today = new Date();
   const [bulan, setBulan] = useState<number>(today.getMonth() + 1);
   const [tahun, setTahun] = useState<number>(today.getFullYear());
 
   const [type, setType] = useState("");
-  const [program, setProgram] = useState("");
-  const [semester, setSemester] = useState<number>(0);
 
+  const [startTanggal, setStartTanggal] = useState("");
+  const [endTanggal, setEndTanggal] = useState("");
   const [tanggal, setTanggal] = useState<number[]>([]);
 
   const [content, setContent] = useState("");
+  const [notes, setNotes] = useState("");
   const [task, setTask] = useState("");
 
-  const [_,setShowInvalid] = useState(false);
+  const [peoples, setPeoples] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   // ===== HELPERS =====
   const getDaysInMonth = (month: number, year: number) => {
-    if (!month || !year) return 0;
-    return new Date(year, month, 0).getDate();
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    const namaHari = [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+    ];
+
+    return Array.from({ length: daysInMonth }, (_, i) => {
+      const day = i + 1;
+      const date = new Date(year, month - 1, day);
+
+      const firstDayOffset = new Date(year, month - 1, 1).getDay();
+
+      const week = Math.floor((i + firstDayOffset) / 7) + 1;
+
+      return {
+        day,
+        label: `${day} - ${namaHari[date.getDay()]} (Week ${week})`,
+        weekday: namaHari[date.getDay()],
+        week,
+      };
+    });
   };
 
-  const availableDates = Array.from(
-    { length: getDaysInMonth(bulan, tahun) },
-    (_, i) => i + 1
+
+  const availableDates = getDaysInMonth(bulan, tahun);
+
+  const filteredEndDates = availableDates.filter(
+    (d) => !startTanggal || d.day >= Number(startTanggal)
   );
+
+
+
+  useEffect(() => {
+    if (startTanggal && endTanggal) {
+      const start = Number(startTanggal);
+      const end = Number(endTanggal);
+
+      if (start <= end) {
+        const range = Array.from(
+          { length: end - start + 1 },
+          (_, i) => start + i
+        );
+
+        setTanggal(range);
+      } else {
+        setTanggal([]);
+      }
+    } else {
+      setTanggal([]);
+    }
+  }, [startTanggal, endTanggal]);
+
 
 
   useEffect(() => {
@@ -59,68 +114,91 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
     }
   }, [open]);
 
-  // ===== VALIDATION =====
-  const isInvalid =
-    !program.trim() ||
-    semester === 0 ||
-    !task.trim() ||
-    !content.trim() ||
-    !type.trim() ||
-    tanggal.length === 0;
 
-  // ===== RESET =====
   const resetForm = () => {
-    setProgram("");
-    setSemester(0);
-    setTanggal([]);
-    setBulan(today.getMonth());
+    setStartTanggal(String(today.getDate()));
+    setBulan(today.getMonth() + 1);
     setTahun(today.getFullYear());
-    setType("");
-    setTask("");
-    setContent("");
-    setShowInvalid(false);
   };
 
   const handleClose = () => {
+    setType("");
+    setTask("");
+    setContent("");
+    setNotes("");
+    setPeoples("");
+
+    setErrors({});
+    setFormError(null);
+    setLoading(false);
     resetForm();
     onClose();
   };
 
-  const toggleDate = (day: number) => {
-    setTanggal((prev) =>
-      prev.includes(day)
-        ? prev.filter((d) => d !== day)
-        : [...prev, day]
-    );
+  
+  useEffect(() => {
+    setTanggal([]);
+    setStartTanggal("");
+    setEndTanggal("");
+  }, [bulan, tahun]);
+
+
+
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+
+    if (!task.trim()) errors.task = "Task wajib diisi";
+    if (!type.trim()) errors.type = "Tipe wajib diisi";
+    if (tanggal.length === 0) errors.tanggal = "Tanggal wajib dipilih";
+
+    return errors;
   };
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
 
 
   // ===== SUBMIT =====
   const handleSubmit = async () => {
-    if (isInvalid) {
-      setShowInvalid(true);
+    if (loading) return;
+
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setFormError("Mohon lengkapi form terlebih dahulu");
       return;
     }
 
+    setErrors({});
+    setFormError(null);
     setLoading(true);
 
     try {
-      await addDoc(collection(db, "calendar"), {
-        program,
-        semester,
+      const payload = {
         bulan,
         tahun,
         tanggal,
         task,
         type,
         content,
-        createdAt: new Date(),
-      });
+        notes,
+        peoples: peoples
+          .split(",")
+          .map((l: string) => l.trim())
+          .filter(Boolean),
+        kategori,
+        createdAt: serverTimestamp(),
+      };
+
+
+      await addDoc(collection(db, "calendars"), payload);
 
       onSuccess();
       handleClose();
     } catch (err) {
-      console.error(err);
+      setFormError(`(${err})\n\nGagal menyimpan data`);
     } finally {
       setLoading(false);
     }
@@ -128,115 +206,164 @@ export default function AddRencanaModal({ open, onClose, onSuccess }: any) {
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <h2>Tambah Rencana</h2>
+      <h2>+ Tambah Rencana</h2>
 
-      <label>Program</label>
-      {/* PROGRAM */}
-      <select value={program} onChange={(e) => setProgram(e.target.value)}>
-        <option value="" disabled>Pilih Program Studi</option>
-        <option value="TRPL">TRPL</option>
-        <option value="BISDIG">BISDIG-Reguler</option>
-        <option value="BISDIGeks">BISDIG-Eksekutif</option>
-      </select>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4">
+          <div>
+            <label htmlFor="title">📝 Title<span>*</span></label>
+            <input className="w-full"
+              id="title"
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              placeholder="Title rencana"
+            />
+          </div>
 
-      <label>Semester</label>
-      {/* SEMESTER */}
-      <select value={semester} onChange={(e) => setSemester(Number(e.target.value))}>
-        <option value={0} disabled>Pilih Semester</option>
-        {[1,2,3,4,5,6,7,8].map((s) => (
-          <option key={s} value={s}>{s}</option>
-        ))}
-      </select>
 
-      <label>Bulan</label>
-      {/* BULAN */}
-      <select value={bulan} onChange={(e) => setBulan(Number(e.target.value))}>
-        <option value={0} disabled>Pilih Bulan</option>
-        {months.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </select>
+          <div>
+            <label htmlFor="tipe">🏷️ Tipe<span>*</span></label>
+            <select className="w-full" id="tipe" value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="" disabled hidden>Pilih Warna</option>
+              <option value="orange">Oranye</option>
+              <option value="red">Merah</option>
+              <option value="blue">Biru</option>
+              <option value="purple">Purple</option>
+              <option value="green">Hijau</option>
+              <option value="abu">Abu</option>
+            </select>
+          </div>
 
-      <label>Tahun</label>
-      {/* TAHUN */}
-      <input
-        type="number"
-        placeholder="Tahun"
-        value={tahun}
-        onChange={(e) => setTahun(Number(e.target.value))}
-      />
-
-      {/* TANGGAL */}
-      <div style={{ marginTop: 10 }}>
-        <label>Tanggal</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6, marginBottom: 10, }}>
-          {availableDates.map((day) => {
-            const isSelected = tanggal.includes(day);
-
-            return (
-              <div
-                key={day}
-                onClick={() => toggleDate(day)}
-                className={`button-jam
-                  ${isSelected ? "selected enabled" : "enabled"}`}
-                style={{
-                  borderColor: isSelected ? "#362dde" : "",
-                  background: isSelected ? "#4f46e5" : "",
-                  color: isSelected ? "#fff" : "#000",
-                }}
-              >
-                {day}
-              </div>
-            );
-          })}
         </div>
-      </div>
 
 
 
-      <label>Tipe</label>
-      {/* TYPE */}
-      <select
-      value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="" disabled>Pilih Tipe</option>
-        <option value="orange-bg">Oranye</option>
-        <option value="red-bg">Merah</option>
-        <option value="blue-bg">Biru</option>
-        <option value="purple-bg">Purple</option>
-        <option value="green-bg">Hijau</option>
-      </select>
-
-      <label>Title</label>
-      {/* TASK */}
-      <input
-        placeholder="Title rencana..."
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-      />
-
-      <label>Deskripsi</label>
-      {/* CONTENT */}
-      <input
-        placeholder="Deskripsi rencana..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+        <label htmlFor="peoples">👥 Pihak Terkait</label>
+        <input
+          id="peoples"
+          placeholder="A, B, .. (dipisah dengan koma)"
+          value={peoples}
+          onChange={(e) => setPeoples(e.target.value)}
+        />
 
 
-      {/* BUTTON */}
-      <button
-        onClick={handleSubmit}
-        disabled={isInvalid || loading}
-        style={{
-          marginTop: 12,
-          opacity: isInvalid || loading ? 0.5 : 1,
-          cursor: isInvalid || loading ? "not-allowed" : "pointer",
-        }}
-      >
-        {loading ? "Loading..." : "Simpan"}
-      </button>
-    </Modal>
+
+
+
+
+        <label htmlFor="desc">💬 Deskripsi</label>
+        {/* CONTENT */}
+        <textarea rows={3}
+          id="desc"
+          placeholder="Deskripsi rencana"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+
+        <label htmlFor="notes">📌 Note / Link URL</label>
+        {/* CONTENT */}
+        <textarea rows={3}
+          id="notes"
+          placeholder="Notes rencana"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+
+
+
+
+
+
+
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="bulan">Bulan<span>*</span></label>
+            {/* BULAN */}
+            <select id="bulan" className="w-full" value={bulan} onChange={(e) => setBulan(Number(e.target.value))}>
+              <option value={0} disabled hidden>Pilih Bulan</option>
+              {months.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="tahun">Tahun<span>*</span></label>
+            {/* TAHUN */}
+            <input id="tahun" className="w-full"
+              placeholder="Tahun"
+              value={tahun}
+              onChange={(e) => setTahun(Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        {/* TANGGAL */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4">
+          <div>
+            <label htmlFor="tanggalStart">Dari Tgl<span>*</span></label>
+            <select
+              id="tanggalStart"
+              className="w-full"
+              value={startTanggal}
+              onChange={(e) => setStartTanggal(e.target.value)}
+            >
+              <option value="" disabled hidden>Pilih Start</option>
+              {availableDates.map((d) => (
+                <option key={d.day} value={d.day}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="tanggalEnd">Sampai Tgl<span>*</span></label>
+            <select
+              id="tanggalEnd"
+              className="w-full"
+              value={endTanggal}
+              onChange={(e) => setEndTanggal(e.target.value)}
+            >
+              <option value="" disabled hidden>Pilih End</option>
+              {filteredEndDates.map((d) => (
+                <option key={d.day} value={d.day}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+
+        {formError && (
+          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+            <div className="whitespace-pre-line break-words">
+              {formError}
+            </div>
+
+            {Object.keys(errors).length > 0 && (
+              <ul className="mt-1 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs">
+                {errors.task && <li>• {errors.task}</li>}
+                {errors.type && <li>• {errors.type}</li>}
+                {errors.tanggal && <li>• {errors.tanggal}</li>}
+              </ul>
+            )}
+          </div>
+        )}
+
+
+        {/* BUTTON */}
+        <button type="button"
+          onClick={handleSubmit}
+          disabled={loading}
+          className={`mt-2 border border-blue-200! px-4 py-2 rounded-md transition ${loading ? "bg-blue-300! opacity-50 cursor-not-allowed!" : "hover:bg-blue-600 hover:text-white! active:bg-blue-800! active:text-white! cursor-pointer"}`}>
+          {loading ? "⏳ Loading..." : "+ Tambah Rencana"}
+        </button>
+      </form>
+    </Modal >
   );
 }
