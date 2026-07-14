@@ -8,14 +8,13 @@ import Navbar from "../components/Navbar";
 import CalendarView from "../components/CalendarView";
 import ScheduleTable from "../components/ScheduleTable";
 import Todo from "../components/Todo";
-import { Category } from "../types/scheduleTypes";
 
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 import fotokurikulum from "../assets/kurikulumTRPL.png"
 
 type HomeProps = {
-    kategori?: Category;
+    kategori?: string;
 };
 
 export default function Classes({ kategori }: HomeProps) {
@@ -60,7 +59,7 @@ export default function Classes({ kategori }: HomeProps) {
         <>
             <Navbar />
 
-            <div className="mx-5 px-4 flex gap-2 text-bold">
+            <div className="mx-5 px-4 flex flex-wrap gap-2 text-bold">
                 <p className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
                     Kelas <span className="uppercase">{isValidKategori ? (data?.kategori ?? "-") : "ALL"}</span>
                 </p>

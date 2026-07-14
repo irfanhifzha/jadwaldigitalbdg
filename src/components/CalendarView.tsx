@@ -1,17 +1,12 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
-import type { User } from "firebase/auth";
 
 import AddRencanaModal from "./AddRencanaModal";
 import ViewRencanaModal from "./ViewRencanaModal";
 
-import { Category, CalendarEvent, statusStyles, statusBorder } from "../types/scheduleTypes";
+import { Props, CalendarEvent, statusStyles, statusBorder } from "../types/scheduleTypes";
 
-type Props = {
-    kategori?: Category;
-    user: User | null;
-};
 
 type Selected = {
     item: CalendarEvent;
@@ -188,9 +183,8 @@ export default function CalendarView({ kategori, user }: Props) {
                         Next {"->"}
                     </button>
 
-                    <button
-                        className="px-3 py-2 border border-gray-200 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200 ease cursor-pointer active:bg-gray-100 active:scale-95 text-xs font-semibold"
-                        onClick={() => setCurrentDate(new Date())}
+                    <button onClick={() => setCurrentDate(new Date())} disabled={currentDate.toDateString() === new Date().toDateString()}
+                        className="px-3 py-2 border border-gray-200 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200 ease cursor-pointer active:bg-gray-100 active:scale-95 text-xs font-semibold disabled:bg-gray-100 disabled:cursor-not-allowed"
                     >
                         📅 Today
                     </button>

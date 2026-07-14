@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase";
-import type { TodoEvent } from "./Todo";
+import type { TodoEvent } from "../types/scheduleTypes";
 
 
 type SortKey = "status" | "createdAt" | "startAt";
@@ -358,7 +358,7 @@ export default function TodoGantt({ category }: any) {
                                     onClick={() => setFocusDate(startOfDay(today))}
                                     className="px-3 py-2 border border-gray-200 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200 ease cursor-pointer active:bg-gray-100 active:scale-95 text-xs font-semibold"
                                 >
-                                    Hari ini
+                                    Today 📅
                                 </button>
                             )}
 

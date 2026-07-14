@@ -58,7 +58,7 @@ function Home() {
 
                             <a
                                 href="/trpl-reg-24"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm active:border-blue-300 active:bg-blue-50 active:text-blue-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -73,7 +73,7 @@ function Home() {
 
                             <a
                                 href="/bisdig-reg-24"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-green-300 hover:bg-green-50 hover:text-green-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-green-300 hover:bg-green-50 hover:text-green-700 hover:shadow-sm active:border-green-300 active:bg-green-50 active:text-green-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -88,7 +88,7 @@ function Home() {
 
                             <a
                                 href="/trpl-reg-25"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 hover:shadow-sm active:border-purple-300 active:bg-purple-50 active:text-purple-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -103,7 +103,7 @@ function Home() {
 
                             <a
                                 href="/bisdig-reg-25"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 hover:shadow-sm active:border-orange-300 active:bg-orange-50 active:text-orange-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -120,7 +120,7 @@ function Home() {
 
                             <a
                                 href="/bisdig-eks-24"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 hover:shadow-sm active:border-cyan-300 active:bg-cyan-50 active:text-cyan-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -135,7 +135,7 @@ function Home() {
 
                             <a
                                 href="/bisdig-eks-25"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-pink-300 hover:bg-pink-50 hover:text-pink-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-pink-300 hover:bg-pink-50 hover:text-pink-700 hover:shadow-sm active:border-pink-300 active:bg-pink-50 active:text-pink-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">
@@ -152,7 +152,7 @@ function Home() {
 
                             <a
                                 href="/dashboard-all"
-                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-red-300 hover:bg-red-50 hover:text-red-700 hover:shadow-sm"
+                                className="active:scale-95 justify-center flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-red-300 hover:bg-red-50 hover:text-red-700 hover:shadow-sm active:border-red-300 hover:bg-red-50 active:text-red-700 active:shadow-sm"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
                                     <span className="material-symbols-rounded">

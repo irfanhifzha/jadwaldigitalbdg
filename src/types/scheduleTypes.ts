@@ -1,4 +1,10 @@
-export type Category = "TRPL24" | "BISDIG24" | "BISDIGeks24" | "TRPL25" | "BISDIG25" | "BISDIGeks25" | "null";
+import type { User } from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
+
+export type Props = {
+    kategori?: string;
+    user: User | null;
+};
 
 export type StatusColor = "green" | "blue" | "red" | "orange" | "purple" | "abu";
 
@@ -28,7 +34,7 @@ export type Schedule = {
 
     tugasAgain: TugasAgain[];
 
-    kategori: Category;
+    kategori: string;
 };
 
 export type CalendarEvent = {
@@ -45,8 +51,34 @@ export type CalendarEvent = {
     type: StatusColor;
 
     notes: string;
-    kategori: Category;
+    kategori: string;
 };
+
+export type TodoEvent = {
+    id: string;
+    kategori: string;
+
+    order: number;
+    status: TodoStatus;
+
+    title: string;
+    subtitle: string;
+    desc: string;
+
+    tipe: StatusColor;
+    note: string;
+    peoples: string[];
+
+    createdAt: Timestamp;
+
+    startAt?: Timestamp;
+    doneAt?: Timestamp;
+    progressTarget?: Timestamp;
+    doneTarget?: Timestamp;
+};
+
+export type TodoStatus = "todo" | "progress" | "done" | "archived";
+
 
 export const statusStyles: Record<string, string> = {
     blue: "bg-blue-600",
@@ -90,3 +122,4 @@ export const statusStylesStatus: Record<string, string> = {
     "progress": "bg-blue-600",
     "done": "bg-green-600",
 };
+

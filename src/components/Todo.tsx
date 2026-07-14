@@ -8,13 +8,14 @@ import {
     doc,
     writeBatch
 } from "firebase/firestore";
-import type { User } from "firebase/auth";
+
 import { db } from "../firebase";
 
 import {
-    Category,
+    TodoEvent,
+    TodoStatus,
     colorClasses,
-    StatusColor,
+    Props,
 } from "../types/scheduleTypes";
 
 import TodoModal from "./TodoModal";
@@ -44,30 +45,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-export type TodoEvent = {
-    id: string;
-    kategori: Category;
 
-    order: number;
-    status: TodoStatus;
-
-    title: string;
-    subtitle: string;
-    desc: string;
-
-    tipe: StatusColor;
-    note: string;
-    peoples: string[];
-
-    createdAt: Timestamp;
-
-    startAt?: Timestamp;
-    doneAt?: Timestamp;
-    progressTarget?: Timestamp;
-    doneTarget?: Timestamp;
-};
-
-export type TodoStatus = "todo" | "progress" | "done" | "archived";
 
 export const todoColumns: { key: TodoStatus; label: string; theme: string }[] = [
     { key: "todo", label: "Todo", theme: "blueStat" },
@@ -81,11 +59,6 @@ const themeClasses: Record<string, { card: string; title: string }> = {
     yellowStat: { card: "bg-blue-600", title: "text-blue-600" },
     greenStat: { card: "bg-green-600", title: "text-green-600" },
     grayStat: { card: "bg-gray-400", title: "text-gray-400" },
-};
-
-type Props = {
-    kategori?: Category;
-    user: User | null;
 };
 
 type Selected = {
@@ -135,7 +108,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
             {(task.desc || task.note) && (
                 <div className="flex flex-col gap-2 bg-white px-3 py-2 rounded-lg text-black">
                     {task.desc && (
-                        <p className="font-medium brightness-50 whitespace-pre-line">
+                        <p className="font-medium whitespace-pre-line">
                             {editMode ? truncate(task.desc) : truncateVIEW(task.desc)}
                         </p>
                     )}
@@ -281,7 +254,7 @@ function SortableTaskCard({
             {...(editMode ? attributes : {})}
             {...(editMode ? listeners : {})}
             onClick={!editMode ? onOpen : undefined}
-            className={`flex flex-col gap-2 flex-wrap p-3 rounded-lg transition! duration-200 ease hover:-translate-y-0.5 active:scale-98
+            className={`flex flex-col gap-2 flex-wrap p-3 rounded-lg transition! duration-200 ease hover:-translate-y-0.5 active:scale-98 wrap-break-word overflow-hidden [&_p]:hyphens-auto [&_p]:break-all
                 ${colorClasses[task.tipe] ?? "border border-black bg-white"}
                 ${editMode ? "[&_button]:cursor-grab! cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md touch-none" : "cursor-pointer"}`}
         >
@@ -555,7 +528,7 @@ export default function TodoBoard({ kategori, user }: Props) {
                         },
                     }}
                 >
-                    <div className="w-full overflow-auto rounded-2xl border border-gray-200 animate-[fadeUp_0.5s_ease-out_forwards]">
+                    <div className="w-full overflow-auto rounded-2xl border border-gray-200 animate-[fadeUp_0.5s_ease-out_forwards] max-h-[1200px]">
                         <table className={`relative w-full table-fixed border-separate border-spacing-0 text-xs [&_th]:border [&_td]:border [&_th]:border-gray-200 [&_td]:border-gray-200  ${editMode ? "max-lg:w-[1000px]" : " max-lg:w-[850px]"}`}>
                             <thead>
                                 <tr className="h-[36px] px-2 items-center text-center [&_th]:font-semibold">

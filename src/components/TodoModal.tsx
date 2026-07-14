@@ -26,6 +26,9 @@ export default function TodoModal({ open, onClose, category }: any) {
         setLoading(false);
         setForm((prev) => ({
             ...prev,
+            people:"",
+            desc:"",
+            note:"",
             title: "",
             subtitle: "",
             tipe: "",
