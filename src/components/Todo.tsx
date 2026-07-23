@@ -70,7 +70,7 @@ type Selected = {
 const truncate = (text: string, max = 20) =>
     text.length > max ? text.slice(0, max).trimEnd() + "..." : text;
 
-const truncateVIEW = (text: string, max = 900) =>
+const truncateVIEW = (text: string, max = 1500) =>
     text.length > max ? text.slice(0, max).trimEnd() + "..." : text;
 
 /* ---------- Shared card content ---------- */
