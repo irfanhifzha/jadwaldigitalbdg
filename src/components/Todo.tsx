@@ -124,7 +124,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
 
                 {task.status === "todo" && task.createdAt &&
                     (<div className="flex items-center bg-white px-2 py-1 rounded-md">
-                        <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"></div>
+                        <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"/>
                         <p className=" text-gray-700">
                             Dibuat pada - {" "}
                             {task?.createdAt ? (() => {
@@ -145,7 +145,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
 
                 {task.status === "progress" && task.startAt &&
                     (<div className="flex items-center bg-white px-2 py-1 rounded-md">
-                        <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-blue-600! transition-all duration-200 animate-[pulse_0.75s_infinite]"></div>
+                        <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-blue-600! transition-all duration-200 animate-[pulse_0.75s_infinite]"/>
                         <p className="text-gray-700">
                             Dimulai dari - {" "}
                             {(() => {
@@ -160,7 +160,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
                 {task.status === "done" && (
                     task.doneAt ? (<>
                         {task.startAt ? (<div className="flex items-center bg-white px-2 py-1 rounded-md">
-                            <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-blue-600! transition-all duration-200"></div>
+                            <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-blue-600! transition-all duration-200"/>
                             <p className="text-gray-700">
                                 Dimulai pada - {" "}
                                 {(() => {
@@ -171,7 +171,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
                                 })()}
                             </p>
                         </div>) : (<div className="flex items-center bg-white px-2 py-1 rounded-md">
-                            <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"></div>
+                            <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"/>
                             <p className="text-gray-700">
                                 Dibuat pada - {" "}
                                 {(() => {
@@ -185,7 +185,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
 
                         )}
                         <div className="flex items-center bg-white px-2 py-1 rounded-md">
-                            <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-green-600! transition-all duration-200"></div>
+                            <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-green-600! transition-all duration-200"/>
                             <p className="text-gray-700">
                                 Selesai pada - {" "}
                                 {(() => {
@@ -197,7 +197,7 @@ function TaskCardContent({ task, theme, editMode, isValidKategori }: { isValidKa
                         </div>
                     </>) : (
                         <div className="flex items-center bg-white px-2 py-1 rounded-md">
-                            <div className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"></div>
+                            <span className="inline-block w-2 h-2 me-1 align-middle rounded-full bg-red-600! transition-all duration-200"/>
                             <p className="text-gray-700">
                                 Dibuat pada - {" "}
                                 {(() => {
@@ -254,7 +254,7 @@ function SortableTaskCard({
             {...(editMode ? attributes : {})}
             {...(editMode ? listeners : {})}
             onClick={!editMode ? onOpen : undefined}
-            className={`flex flex-col gap-2 flex-wrap p-3 rounded-lg transition! duration-200 ease hover:-translate-y-0.5 active:scale-98 wrap-break-word overflow-hidden [&_p]:hyphens-auto [&_p]:break-all
+            className={`flex flex-col gap-2 flex-wrap p-3 rounded-lg transition! duration-200 ease hover:-translate-y-0.5 active:scale-98 wrap-break-word overflow-hidden [&_div]:w-full
                 ${colorClasses[task.tipe] ?? "border border-black bg-white"}
                 ${editMode ? "[&_button]:cursor-grab! cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md touch-none" : "cursor-pointer"}`}
         >

@@ -90,9 +90,11 @@ export default function Classes({ kategori }: HomeProps) {
                         <p className="font-bold text-lg"></p>
                     </div>
 
-                    <Todo kategori={kategori} user={isValidKategori ? user : null} />
-                    <CalendarView kategori={kategori} user={isValidKategori ? user : null} />
+                    
+                    
                     <ScheduleTable kategori={kategori} user={isValidKategori ? user : null} />
+                    <CalendarView kategori={kategori} user={isValidKategori ? user : null} />
+                    <Todo kategori={kategori} user={isValidKategori ? user : null} />
 
                     
 
